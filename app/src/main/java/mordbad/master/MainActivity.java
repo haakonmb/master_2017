@@ -5,15 +5,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
 
     String TAG = "mainactivity";
+
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        addDrawerItems();
         Log.d(TAG, "test");
     }
 
@@ -37,5 +45,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void addDrawerItems(){
+        String[] osArray = { "Android", "iOs", "Windows"};
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        mDrawerList.setAdapter(mAdapter);
     }
 }
