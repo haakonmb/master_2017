@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             }
 
             // Create a new Fragment to be placed in the activity layout
-            PreferenceFragment firstFragment = new PreferenceFragment();
+            PreferenceFragment prefFragment = new PreferenceFragment();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
             // Add the fragment to the 'fragment_container' FrameLayout
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
+                    .add(R.id.fragment_container, prefFragment).commit();
         }
 
 
