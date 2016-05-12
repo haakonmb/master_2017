@@ -25,10 +25,13 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
+    private Reasoner reasoner;
+    private String[] events = null;
+    private Wish wish;
 
     FragmentManager fragmentManager = getSupportFragmentManager();
 
-
+    String[] activites = {"Arts & Culture", "Business","Community","Education", };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,8 +163,14 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     @Override
     public void passPreference(Wish wish) {
-        //send this to the recommender
+        //send wish to the recommender for processing
+        this.wish = wish;
+        events = reasoner.getEvents(wish);
+        //TODO Change to loading screen while processing
+        //
 
+
+        //TODO Then change to tourfragment when you get input from Reasoner
     }
 
    /* @Override
