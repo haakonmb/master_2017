@@ -3,6 +3,7 @@ package mordbad.master;
 //import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,10 +13,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
 
     String TAG = "mainactivity";
 
@@ -29,14 +31,19 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private String[] events = null;
     private Wish wish;
 
+
+
+    //fragments ohoy!
     FragmentManager fragmentManager = getSupportFragmentManager();
+    PreferenceFragment prefFragment;
+    TourFragment tourFragment;
+    MapFragment mapFragment;
 
     String[] activites = {"Arts & Culture", "Business","Community","Education", };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
@@ -50,7 +57,10 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             }
 
             // Create a new Fragment to be placed in the activity layout
-            PreferenceFragment prefFragment = new PreferenceFragment();
+            //PreferenceFragment prefFragment = new PreferenceFragment();
+            tourFragment = new TourFragment();
+            mapFragment = new MapFragment();
+            prefFragment = new PreferenceFragment();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -65,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         //Connecting the listview and populating it
         mDrawerList = (ListView)findViewById(R.id.navList);
         addDrawerItems();
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 
         //Enabling the hamburger-icon
@@ -126,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private void setupDrawer(){
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close){
 
-            //Called when a drawer has settlend in a completely open state
+            //Called when a drawer has settled in a completely open state
             public void onDrawerOpened(View drawerView){
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle("Navigation!");
@@ -171,6 +182,49 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
         //TODO Then change to tourfragment when you get input from Reasoner
+    }
+
+    private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+
+
+    }
+
+    private void selectItem(int position) {
+        Log.d(TAG, ""+position);
+        Fragment fragment = null;
+
+        switch(position){
+            case 0:
+                fragment = prefFragment;
+                break;
+
+            case 1:
+                fragment = tourFragment;
+                break;
+
+            case 2:
+                fragment = mapFragment;
+                break;
+
+            case 4:
+                prefFragment.addXp();
+                break;
+
+            default:
+                Log.d(TAG, "That menu-item didnt exist! How do?");
+               // fragment = prefFragment;
+        }
+
+        if(fragment != null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+
+        }
     }
 
    /* @Override

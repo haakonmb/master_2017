@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -33,7 +34,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
     private OnFragmentInteractionListener mListener;
 
-
+    private Wish wish = new Wish();
     private int level = 1;
     private int xp = 0;
     private int levelUpXpCount= 1000;
@@ -41,6 +42,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private Button mButton;
     private TextView mXpView;
     private TextView mLevelView;
+    private CheckBox mCheckBox;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,10 +81,17 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
 
+
+        //Find all the things
         mButton = (Button) view.findViewById(R.id.button);
-        mButton.setOnClickListener(this);
         mXpView = (TextView) view.findViewById(R.id.mPrefTextView);
         mLevelView = (TextView) view.findViewById(R.id.levelTextView);
+        mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+        //Make them listen!
+        mButton.setOnClickListener(this);
+        mCheckBox.setOnClickListener(this);
+
         return view;
     }
 
@@ -112,15 +121,26 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
     @Override
     public void onClick(View v) {
-        //if(v == view.findViewByid(R.id.button)){
-        addXp();
-
-        //}
+//        mListener.passPreference(wish);
 
 
+        switch(v.getId()){
+            //case
+            //TODO Legg til knapper og funksjonalitet for fragmentet
+
+
+            case R.id.button:
+                addXp();
+                break;
+
+
+          //  default:
+            //    throw new RuntimeException("Unknown Button ID");
+
+        }
     }
 
-    private void addXp() {
+    void addXp() {
         xp += 100;
         if(xp > levelUpXpCount){
             level +=1;
@@ -147,5 +167,4 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         //public void addXp();
         public void passPreference(Wish wish );
     }
-
 }
