@@ -17,7 +17,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
+import mordbad.master.dss.Gatherer;
+import mordbad.master.dss.Reasoner;
+
+public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     String TAG = "mainactivity";
 
@@ -27,10 +34,13 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
-    private Reasoner reasoner;
+    //private Reasoner reasoner;
     private String[] events = null;
     private Wish wish;
 
+    //Init Decision support system parts
+    private Gatherer gatherer = null;
+    private Reasoner reasoner = null;
 
 
     //fragments ohoy!
@@ -39,11 +49,26 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     TourFragment tourFragment;
     MapFragment mapFragment;
 
+    //apiclient for location services
+    GoogleApiClient mGoogleApiClient = null;
+
+
+
     String[] activites = {"Arts & Culture", "Business","Community","Education", };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
@@ -182,6 +207,21 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
         //TODO Then change to tourfragment when you get input from Reasoner
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {

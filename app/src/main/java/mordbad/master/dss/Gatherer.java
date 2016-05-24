@@ -1,4 +1,6 @@
-package mordbad.master;
+package mordbad.master.dss;
+
+import mordbad.master.Wish;
 
 /**
  * Created by haakon on 12/05/16.
