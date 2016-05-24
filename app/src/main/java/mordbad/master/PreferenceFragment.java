@@ -92,6 +92,10 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         mButton.setOnClickListener(this);
         mCheckBox.setOnClickListener(this);
 
+        mLevelView.setText(String.valueOf(level));
+
+        mXpView.setText(String.valueOf(xp));
+
         return view;
     }
 
