@@ -61,6 +61,10 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         setContentView(R.layout.activity_main);
 
 
+        //Proper init of DSS
+        reasoner = new Reasoner();
+        gatherer = new Gatherer();
+
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -228,11 +232,13 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
+            mDrawerLayout.closeDrawers();
         }
 
 
     }
 
+    //Changing between fragments
     private void selectItem(int position) {
         Log.d(TAG, ""+position);
         Fragment fragment = null;
