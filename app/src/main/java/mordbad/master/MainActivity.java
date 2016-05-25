@@ -1,10 +1,15 @@
 package mordbad.master;
 
 //import android.app.FragmentManager;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +21,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
+import java.text.CollationElementIterator;
 
 import mordbad.master.dss.Gatherer;
 import mordbad.master.dss.Reasoner;
@@ -53,8 +61,17 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     GoogleApiClient mGoogleApiClient = null;
 
 
+    String[] activites = {"Arts & Culture", "Business", "Community", "Education",};
+    private Location mLastLocation;
 
-    String[] activites = {"Arts & Culture", "Business","Community","Education", };
+    //TODO change to more accurate type. Ref onConnected() for details
+    private CollationElementIterator mLatitudeText;
+    private CollationElementIterator mLongitudeText;
+
+
+    private int permissionFine;
+    private int permissionCoarse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
-           // firstFragment.setArguments(getIntent().getExtras());
+            // firstFragment.setArguments(getIntent().getExtras());
 
             // Add the fragment to the 'fragment_container' FrameLayout
             fragmentManager.beginTransaction()
@@ -102,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
         //Connecting the listview and populating it
-        mDrawerList = (ListView)findViewById(R.id.navList);
+        mDrawerList = (ListView) findViewById(R.id.navList);
         addDrawerItems();
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -111,10 +128,18 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
 
         setupDrawer();
+
+        //Check for permissions
+        permissionFine = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        permissionCoarse = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+
 
 
         Log.d(TAG, "test");
@@ -128,9 +153,19 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     }
 
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
 
@@ -155,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             return true;
         }
 
-        if (mDrawerToggle.onOptionsItemSelected(item)){
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -163,11 +198,11 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
 
-    private void setupDrawer(){
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close){
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
 
             //Called when a drawer has settled in a completely open state
-            public void onDrawerOpened(View drawerView){
+            public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle("Navigation!");
                 invalidateOptionsMenu();
@@ -175,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             }
 
             //Called when a drawer has settled in a completely closed state
-            public void onDrawerClosed(View view){
+            public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 getSupportActionBar().setTitle(mActivityTitle);
                 invalidateOptionsMenu();
@@ -190,8 +225,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     }
 
-    private void addDrawerItems(){
-        String[] drawerItems = { "LevelTest", "Tour", "Map", "LevelTest"};
+    private void addDrawerItems() {
+        String[] drawerItems = {"LevelTest", "Tour", "Map", "LevelTest"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
         mDrawerList.setAdapter(mAdapter);
     }
@@ -214,9 +249,35 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
-        
+    public void onConnected(Bundle connectionHint) {
+        if (permissionFine != PackageManager.PERMISSION_GRANTED && permissionCoarse != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+
+        try{
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            if (mLastLocation != null) {
+                mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+                mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+            }
+
+        }
+        catch(SecurityException e){
+            Log.d(TAG, ""+e);
+            Toast.makeText(MainActivity.this, "We need permissionses for this", Toast.LENGTH_SHORT).show();
+
+        }
+
     }
+
 
     @Override
     public void onConnectionSuspended(int i) {
