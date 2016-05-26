@@ -179,7 +179,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
                 sb.append("&radius=5000");
                 sb.append("&types=" + type);
                 sb.append("&sensor=true");
-                sb.append("&key="+R.string.API_KEY);
+                sb.append("&key="+"AIzaSyCsXtKSpye4AM6p7wUswl3HP9Fg5ZpF4ek");
 
 
                 Log.d(TAG, ""+sb.toString());
@@ -202,8 +202,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
         mLongitude = location.getLongitude();
         LatLng latLng = new LatLng(mLatitude, mLongitude);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+    //    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+     //   mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
         Log.d(TAG, "lat: " + mLatitude);
         Log.d(TAG,"lon: "+mLongitude);
 
@@ -289,8 +289,12 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
     //TODO finish up so mainactivity can pass location to this fragment, consider another designs-choice / refactor
     public void SetLocation(Location mLastLocation) {
+
+        Log.d(TAG,"setlocation activated");
         this.mLocation = mLastLocation;
         onLocationChanged(mLastLocation);
+
+
     }
 
     /**
@@ -335,6 +339,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
             String line = "";
             while( ( line = br.readLine())  != null){
                 sb.append(line);
+                Log.d(TAG,""+line);
             }
 
             data = sb.toString();
