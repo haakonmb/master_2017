@@ -91,12 +91,18 @@ public class MapFragment extends android.support.v4.app.Fragment {
         mMapView.onCreate(mBundle);
         setUpMapIfNeeded(inflatedView);
 
+
+
+        mMap.setMyLocationEnabled(true);
+
+
         // Inflate the layout for this fragment
         return inflatedView;
     }
 
     private void setUpMapIfNeeded(View inflatedView) {
         if (mMap == null) {
+            //TODO change to non-deprecated method
             mMap = ((MapView) inflatedView.findViewById(R.id.map)).getMap();
             if (mMap != null) {
                 setUpMap();

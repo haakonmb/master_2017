@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -65,12 +67,14 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private Location mLastLocation;
 
     //TODO change to more accurate type. Ref onConnected() for details
-    private CollationElementIterator mLatitudeText;
-    private CollationElementIterator mLongitudeText;
+    private TextView mLatitudeText;
+    private TextView mLongitudeText;
 
 
     private int permissionFine;
     private int permissionCoarse;
+    private String[] permissions;
+    private int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,15 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         //Proper init of DSS
         reasoner = new Reasoner();
         gatherer = new Gatherer();
+
+
+        //Check for permissions
+        permissionFine = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        permissionCoarse = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+
 
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
@@ -133,12 +146,6 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
         setupDrawer();
 
-        //Check for permissions
-        permissionFine = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-
-        permissionCoarse = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION);
 
 
 
@@ -265,8 +272,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
             if (mLastLocation != null) {
-                mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-                mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+//                mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+  //              mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+                Log.d(TAG, ""+mLastLocation);
             }
 
         }
@@ -277,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         }
 
     }
+
 
 
     @Override
