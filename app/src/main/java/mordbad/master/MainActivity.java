@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         permissionCoarse = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
 
-
+        Log.d(TAG,""+permissionFine);
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)

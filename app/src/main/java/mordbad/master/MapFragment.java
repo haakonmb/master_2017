@@ -1,9 +1,12 @@
 package mordbad.master;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +81,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View inflatedView = inflater.inflate(R.layout.fragment_map,container, false);
+        View inflatedView = inflater.inflate(R.layout.fragment_map, container, false);
 
        /* try {
             MapsInitializer.initialize(getActivity());
@@ -92,13 +95,26 @@ public class MapFragment extends android.support.v4.app.Fragment {
         setUpMapIfNeeded(inflatedView);
 
 
-
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return inflatedView;
+        }
         mMap.setMyLocationEnabled(true);
 
 
         // Inflate the layout for this fragment
         return inflatedView;
     }
+
+   /* private int checkSelfPermission(String accessFineLocation) {
+        return 1;
+    }*/
 
     private void setUpMapIfNeeded(View inflatedView) {
         if (mMap == null) {
