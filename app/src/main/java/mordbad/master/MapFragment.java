@@ -23,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -72,9 +73,12 @@ public class MapFragment extends android.support.v4.app.Fragment {
     String[] mPlaceType = null;
     String[] mPlaceTypeName = null;
 
+    Location mLocation = null;
+
     double mLatitude = 0;
     double mLongitude = 0;
 
+    Button btnFind = null;
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -131,8 +135,6 @@ public class MapFragment extends android.support.v4.app.Fragment {
         // Setting adapter on Spinner to set place types
         mSprPlaceType.setAdapter(adapter);
 
-        Button btnFind;
-
         // Getting reference to Find Button
         btnFind = (Button) inflatedView.findViewById(R.id.btn_find);
 
@@ -153,12 +155,12 @@ public class MapFragment extends android.support.v4.app.Fragment {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for Activity#requestPermissions for more details.
+            Log.d(TAG,"Something fucked with location this way comes");
             return inflatedView;
         }
         mMap.setMyLocationEnabled(true);
 
-
-
+        Log.d(TAG,"Location success? After setMyLocationEnabled at least");
 
 
         // Setting click event lister for the find button
@@ -166,6 +168,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onClick(View v) {
+
+                mListener.getLocation();
 
                 int selectedPosition = mSprPlaceType.getSelectedItemPosition();
                 String type = mPlaceType[selectedPosition];
@@ -175,8 +179,10 @@ public class MapFragment extends android.support.v4.app.Fragment {
                 sb.append("&radius=5000");
                 sb.append("&types=" + type);
                 sb.append("&sensor=true");
-                sb.append("&key=YOUR_API_KEY");
+                sb.append("&key="+R.string.API_KEY);
 
+
+                Log.d(TAG, ""+sb.toString());
                 // Creating a new non-ui thread task to download json data
                 PlacesTask placesTask = new PlacesTask();
 
@@ -189,6 +195,18 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
         // Inflate the layout for this fragment
         return inflatedView;
+    }
+
+    public void onLocationChanged(Location location) {
+        mLatitude = location.getLatitude();
+        mLongitude = location.getLongitude();
+        LatLng latLng = new LatLng(mLatitude, mLongitude);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        Log.d(TAG, "lat: " + mLatitude);
+        Log.d(TAG,"lon: "+mLongitude);
+
     }
 
     private boolean checkPlayServices() {
@@ -270,8 +288,9 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
 
     //TODO finish up so mainactivity can pass location to this fragment, consider another designs-choice / refactor
-    public void giveLocation(Location mLastLocation) {
-
+    public void SetLocation(Location mLastLocation) {
+        this.mLocation = mLastLocation;
+        onLocationChanged(mLastLocation);
     }
 
     /**
@@ -289,6 +308,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
         public void onFragmentInteraction(Uri uri);
 
         //TODO add requestlocation-method for getting location from mainCativity
+        public Location getLocation();
     }
 
     /** A method to download json data from url */
