@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -28,8 +27,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-
-import java.text.CollationElementIterator;
 
 import mordbad.master.dss.Gatherer;
 import mordbad.master.dss.Reasoner;
@@ -244,6 +241,12 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     @Override
+    public Location getLocation() {
+        mapFragment.SetLocation(mLastLocation);
+        return mLastLocation;
+    }
+
+    @Override
     public void passPreference(Wish wish) {
         //send wish to the recommender for processing
         this.wish = wish;
@@ -324,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
             case 2:
                 fragment = mapFragment;
-                mapFragment.giveLocation(mLastLocation);
+                mapFragment.SetLocation(mLastLocation);
                 break;
 
             case 4:
