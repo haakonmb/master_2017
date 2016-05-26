@@ -12,6 +12,8 @@
 
     <string name="str_btn_find">Find</string>
 
+    <string name="API_KEY">AIzaSyCsXtKSpye4AM6p7wUswl3HP9Fg5ZpF4ek</string>
+
     <string-array name="place_type">
         <item>airport</item>
         <item>atm</item>
