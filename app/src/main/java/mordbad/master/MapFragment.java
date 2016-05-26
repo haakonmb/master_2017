@@ -2,21 +2,43 @@ package mordbad.master;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -32,6 +54,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "MapFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -44,6 +67,16 @@ public class MapFragment extends android.support.v4.app.Fragment {
     private GoogleMap mMap;
     private Bundle mBundle;
 
+    Spinner mSprPlaceType;
+
+    String[] mPlaceType = null;
+    String[] mPlaceTypeName = null;
+
+    double mLatitude = 0;
+    double mLongitude = 0;
+
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     /**
      * Use this factory method to create a new instance of
@@ -83,16 +116,33 @@ public class MapFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_map, container, false);
 
-       /* try {
-            MapsInitializer.initialize(getActivity());
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO handle this situation
-        }
-*/
+
+        mPlaceType = getResources().getStringArray(R.array.place_type);
+
+        mPlaceTypeName = getResources().getStringArray(R.array.place_type_name);
+
+        // Creating an array adapter with an array of Place types
+        // to populate the spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, mPlaceTypeName);
+
+        // Getting reference to the Spinner
+        mSprPlaceType = (Spinner) inflatedView.findViewById(R.id.spr_place_type);
+
+        // Setting adapter on Spinner to set place types
+        mSprPlaceType.setAdapter(adapter);
+
+        Button btnFind;
+
+        // Getting reference to Find Button
+        btnFind = (Button) inflatedView.findViewById(R.id.btn_find);
 
         mMapView = (MapView) inflatedView.findViewById(R.id.map);
         mMapView.onCreate(mBundle);
         setUpMapIfNeeded(inflatedView);
+
+
+        // Getting Google Play availability status
+        boolean status = checkPlayServices();
 
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -108,8 +158,52 @@ public class MapFragment extends android.support.v4.app.Fragment {
         mMap.setMyLocationEnabled(true);
 
 
+
+
+
+        // Setting click event lister for the find button
+        btnFind.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                int selectedPosition = mSprPlaceType.getSelectedItemPosition();
+                String type = mPlaceType[selectedPosition];
+
+                StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+                sb.append("location=" + mLatitude + "," + mLongitude);
+                sb.append("&radius=5000");
+                sb.append("&types=" + type);
+                sb.append("&sensor=true");
+                sb.append("&key=YOUR_API_KEY");
+
+                // Creating a new non-ui thread task to download json data
+                PlacesTask placesTask = new PlacesTask();
+
+                // Invokes the "doInBackground()" method of the class PlaceTask
+                placesTask.execute(sb.toString());
+
+            }
+        });
+
+
         // Inflate the layout for this fragment
         return inflatedView;
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(getContext());
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(getActivity(), result,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
    /* private int checkSelfPermission(String accessFineLocation) {
@@ -174,6 +268,12 @@ public class MapFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
+
+    //TODO finish up so mainactivity can pass location to this fragment, consider another designs-choice / refactor
+    public void giveLocation(Location mLastLocation) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -187,6 +287,145 @@ public class MapFragment extends android.support.v4.app.Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
+        //TODO add requestlocation-method for getting location from mainCativity
     }
+
+    /** A method to download json data from url */
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            URL url = new URL(strUrl);
+
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Connecting to url
+            urlConnection.connect();
+
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb  = new StringBuffer();
+
+            String line = "";
+            while( ( line = br.readLine())  != null){
+                sb.append(line);
+            }
+
+            data = sb.toString();
+
+            br.close();
+
+        }catch(Exception e){
+            Log.d(TAG, "Exception while downloading url " +e.toString());
+        }finally{
+            iStream.close();
+            urlConnection.disconnect();
+        }
+
+        return data;
+    }
+
+    /**
+     * A class, to download Google Places
+     */
+    private class PlacesTask extends AsyncTask<String, Integer, String> {
+
+        String data = null;
+
+        // Invoked by execute() method of this object
+        @Override
+        protected String doInBackground(String... url) {
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        // Executed after the complete execution of doInBackground() method
+        @Override
+        protected void onPostExecute(String result) {
+            ParserTask parserTask = new ParserTask();
+
+            // Start parsing the Google places in JSON format
+            // Invokes the "doInBackground()" method of the class ParseTask
+            parserTask.execute(result);
+        }
+
+    }
+
+    /** A class to parse the Google Places in JSON format */
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
+
+        JSONObject jObject;
+
+        // Invoked by execute() method of this object
+        @Override
+        protected List<HashMap<String,String>> doInBackground(String... jsonData) {
+
+            List<HashMap<String, String>> places = null;
+            PlaceJSONParser placeJsonParser = new PlaceJSONParser();
+
+            try{
+                jObject = new JSONObject(jsonData[0]);
+
+                /** Getting the parsed data as a List construct */
+                places = placeJsonParser.parse(jObject);
+
+            }catch(Exception e){
+                Log.d("Exception",e.toString());
+            }
+            return places;
+        }
+
+        // Executed after the complete execution of doInBackground() method
+        @Override
+        protected void onPostExecute(List<HashMap<String,String>> list){
+
+            // Clears all the existing markers
+            mMap.clear();
+
+            for(int i=0;i<list.size();i++){
+
+                // Creating a marker
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                // Getting a place from the places list
+                HashMap<String, String> hmPlace = list.get(i);
+
+                // Getting latitude of the place
+                double lat = Double.parseDouble(hmPlace.get("lat"));
+
+                // Getting longitude of the place
+                double lng = Double.parseDouble(hmPlace.get("lng"));
+
+                // Getting name
+                String name = hmPlace.get("place_name");
+
+                // Getting vicinity
+                String vicinity = hmPlace.get("vicinity");
+
+                LatLng latLng = new LatLng(lat, lng);
+
+                // Setting the position for the marker
+                markerOptions.position(latLng);
+
+                // Setting the title for the marker.
+                //This will be displayed on taping the marker
+                markerOptions.title(name + " : " + vicinity);
+
+                // Placing a marker on the touched position
+                mMap.addMarker(markerOptions);
+            }
+        }
+    }
+
 
 }

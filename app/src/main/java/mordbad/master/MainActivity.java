@@ -324,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
             case 2:
                 fragment = mapFragment;
+                mapFragment.giveLocation(mLastLocation);
                 break;
 
             case 4:
