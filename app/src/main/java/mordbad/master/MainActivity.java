@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 
 import mordbad.master.dss.Gatherer;
 import mordbad.master.dss.Reasoner;
@@ -98,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .enableAutoManage(this, this)
                     .build();
         }
 
@@ -244,6 +248,14 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     public Location getLocation() {
         mapFragment.SetLocation(mLastLocation);
         return mLastLocation;
+    }
+
+    @Override
+    public String getPlaces() {
+        //mGoogleApiClient.PlaceDetectionApi.getCurrentPlace();
+
+
+        return null;
     }
 
     @Override

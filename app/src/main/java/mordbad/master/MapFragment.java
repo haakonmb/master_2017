@@ -179,7 +179,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
                 sb.append("&radius=5000");
                 sb.append("&types=" + type);
                 sb.append("&sensor=true");
-                sb.append("&key="+"AIzaSyCsXtKSpye4AM6p7wUswl3HP9Fg5ZpF4ek");
+                sb.append("&key="+"AIzaSyBDJ5xrcLftFy_VC0ZoRc2j2Jn-oTLPXvc");
 
 
                 Log.d(TAG, ""+sb.toString());
@@ -313,6 +313,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
         //TODO add requestlocation-method for getting location from mainCativity
         public Location getLocation();
+
+        public String getPlaces();
     }
 
     /** A method to download json data from url */
@@ -368,6 +370,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
         protected String doInBackground(String... url) {
             try {
                 data = downloadUrl(url[0]);
+
+               // data = mListener.getPlaces();
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
             }
