@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -134,6 +135,27 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
         // Setting adapter on Spinner to set place types
         mSprPlaceType.setAdapter(adapter);
+
+        mSprPlaceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.d(TAG,"Spinner clicked");
+
+
+                mSprPlaceType.setSelection(position);
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.d(TAG,"Spinner nothing selected");
+            }
+        });
+
+        mSprPlaceType.setSelection(3);
 
         // Getting reference to Find Button
         btnFind = (Button) inflatedView.findViewById(R.id.btn_find);
@@ -341,7 +363,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
             String line = "";
             while( ( line = br.readLine())  != null){
                 sb.append(line);
-                Log.d(TAG,""+line);
+                Log.d(TAG,"dURL "+line);
             }
 
             data = sb.toString();
