@@ -155,7 +155,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        mSprPlaceType.setSelection(3);
+        //mSprPlaceType.setSelection(3);
+        mSprPlaceType.bringToFront();
 
         // Getting reference to Find Button
         btnFind = (Button) inflatedView.findViewById(R.id.btn_find);
