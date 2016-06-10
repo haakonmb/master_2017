@@ -2,10 +2,8 @@ package mordbad.master;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,13 +20,10 @@ import android.widget.Spinner;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
@@ -80,6 +75,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
     double mLongitude = 0;
 
     Button btnFind = null;
+
+    HashMap<Marker, String> markerID;
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -215,6 +212,19 @@ public class MapFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Log.d(TAG, "mark: " + markerID.get(marker));
+
+//                String infoget = "https://maps.googleapis.com/maps/api/place/details/json?placeid="+markerID.get(marker)+"&key=AIzaSyBDJ5xrcLftFy_VC0ZoRc2j2Jn-oTLPXvc";
+//
+//                PlacesDetails placesDetails= new PlacesDetails();
+//                placesDetails.execute(infoget);
+//                mListener.placeDetails(markerID.get(marker));
+            }
+        });
+
 
         // Inflate the layout for this fragment
         return inflatedView;
@@ -338,6 +348,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
         public Location getLocation();
 
         public String getPlaces();
+
     }
 
     /** A method to download json data from url */
@@ -443,6 +454,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
             // Clears all the existing markers
             mMap.clear();
+            markerID = new HashMap<Marker, String>();
 
             for(int i=0;i<list.size();i++){
 
@@ -463,8 +475,24 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
                 // Getting vicinity
                 String vicinity = hmPlace.get("vicinity");
+//                String icon = hmPlace.get("icon");
+//                try{
+//
+//                    URL url = new URL(icon);
+//                    Bitmap image = BitmapFactory.decodeStream(url.openStream());
+//                    BitmapDescriptor bmd = BitmapDescriptorFactory.fromBitmap(image);
+//                    markerOptions.icon(bmd);
+//                }
+//                catch (Exception e){
+//                    Log.d(TAG, ""+e);
+//                }
+//
+//                Log.d(TAG,""+icon);
 
                 LatLng latLng = new LatLng(lat, lng);
+
+                markerOptions.snippet("test");
+                //markerOptions.icon(icon);
 
                 // Setting the position for the marker
                 markerOptions.position(latLng);
@@ -474,7 +502,9 @@ public class MapFragment extends android.support.v4.app.Fragment {
                 markerOptions.title(name + " : " + vicinity);
 
                 // Placing a marker on the touched position
-                mMap.addMarker(markerOptions);
+                Marker mark = mMap.addMarker(markerOptions);
+                markerID.put(mark, hmPlace.get("place_id"));
+
             }
         }
     }
