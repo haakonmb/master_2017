@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -32,6 +35,28 @@ public class TourFragment extends android.support.v4.app.Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    JSONObject results = null;
+
+    TextView nameView;
+    TextView adressView;
+    TextView phoneView;
+    TextView openView;
+    TextView openTimeView;
+    TextView websiteView;
+    TextView typesView;
+
+    String placeDetails = "";
+
+    String[] jsonAttrib = new String[]{
+            "name",
+            "formatted adress",
+            "international phone number",
+            "open_now",
+            "weekday text",
+            "website",
+            "types"
+    };
+
 
     /**
      * Use this factory method to create a new instance of
@@ -68,12 +93,55 @@ public class TourFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View inflatedView = inflater.inflate(R.layout.fragment_tour, container, false);
+        View view = inflater.inflate(R.layout.fragment_tour, container, false);
+
+        nameView = (TextView) view.findViewById(R.id.jsonView);
+        adressView = (TextView) view.findViewById(R.id.textView);
+        phoneView = (TextView) view.findViewById(R.id.textView2);
+        openView = (TextView) view.findViewById(R.id.textView3);
+        openTimeView = (TextView) view.findViewById(R.id.textView4);
+        websiteView = (TextView) view.findViewById(R.id.textView5);
+        typesView = (TextView) view.findViewById(R.id.textView6);
+
+
+        populate();
 
 
 
+        nameView.setText("test");
+        nameView.setText(placeDetails);
+        nameView.setMovementMethod(new ScrollingMovementMethod());
 
-        return inflatedView;
+        return view;
+    }
+
+    private void populate() {
+        String name = "";
+        String adr = "";
+        String phone = "";
+        String open = "";
+        String[] openTime = {};
+        String web = "";
+        String[] types = {};
+
+        JSONArray place = null;
+
+
+        try{
+            place = results.getJSONArray("results");
+
+            if(!place.isNull(jsonAttrib[0].toString())){
+
+
+            }
+
+
+        }
+        catch(Exception e){
+            Log.d(TAG,""+e);
+
+
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -101,9 +169,15 @@ public class TourFragment extends android.support.v4.app.Fragment {
     }
 
     public void presentDetails(String result) {
-        try{
-            JSONObject results = new JSONObject(result);
 
+        String vicinity = "";
+        try{
+            results = new JSONObject(result);
+
+//            // Extracting Place Vicinity, if available
+//            if(!results.isNull("vicinity")){
+//                vicinity = results.getString("vicinity");
+//            }
 
         }
         catch(Exception e){
@@ -112,9 +186,21 @@ public class TourFragment extends android.support.v4.app.Fragment {
         }
 
 
+        Log.d(TAG,""+result);
+//        Log.d(TAG, "" + vicinity);
+        Log.d(TAG, "presentDetials got called");
+        placeDetails = result;
+
+        nameView.setText(result);
 
 
     }
+
+
+
+
+
+
 
     /**
      * This interface must be implemented by activities that contain this
