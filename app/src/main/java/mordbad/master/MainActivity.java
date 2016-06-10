@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             tourFragment = new TourFragment();
             mapFragment = new MapFragment();
             prefFragment = new PreferenceFragment();
-
+            gatherer.setup(mapFragment);
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             // firstFragment.setArguments(getIntent().getExtras());
@@ -251,11 +251,17 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     @Override
-    public String getPlaces() {
-        //mGoogleApiClient.PlaceDetectionApi.getCurrentPlace();
+    public void getPlaces(String s) {
+        gatherer.getPlaces(s);
 
 
-        return null;
+    }
+
+
+
+    @Override
+    public void placeDetails(String s) {
+        gatherer.placeDetails(s);
     }
 
     @Override
