@@ -264,6 +264,25 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         gatherer.placeDetails(s);
     }
 
+
+
+    //Change to TourFragment from Mapfragment by way of clicking marker and present details about a place
+    @Override
+    public void presentDetails(String result) {
+
+
+
+        if(tourFragment != null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, tourFragment)
+                    .commit();
+
+        }
+        tourFragment.presentDetails(result);
+
+
+    }
+
     @Override
     public void passPreference(Wish wish) {
         //send wish to the recommender for processing

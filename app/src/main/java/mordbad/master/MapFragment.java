@@ -337,7 +337,11 @@ public class MapFragment extends android.support.v4.app.Fragment {
         ParserTask pt= new ParserTask();
 
         pt.execute(result);
-        Log.d(TAG,"Got called by gatherer");
+        Log.d(TAG, "Got called by gatherer");
+    }
+
+    public void presentDetails(String result) {
+        mListener.presentDetails(result);
     }
 
     /**
@@ -360,9 +364,11 @@ public class MapFragment extends android.support.v4.app.Fragment {
         public void getPlaces(String s);
 
         void placeDetails(String s);
+
+        void presentDetails(String result);
     }
 
-
+    //TODO: move to just using JSONObject as hashmap directly instead of needlessly making one yourself.
     /** A class to parse the Google Places in JSON format */
     private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
 

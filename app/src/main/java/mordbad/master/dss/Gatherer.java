@@ -164,6 +164,7 @@ public class Gatherer {
             else{
 //                mapFragment.setPlaces(result);
                 Log.d(TAG, "places no");
+                mapFragment.presentDetails(result);
             }
         }
 
