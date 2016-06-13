@@ -49,10 +49,10 @@ public class TourFragment extends android.support.v4.app.Fragment {
 
     String[] jsonAttrib = new String[]{
             "name",
-            "formatted adress",
-            "international phone number",
+            "formatted_address",
+            "international_phone_number",
             "open_now",
-            "weekday text",
+            "weekday_text",
             "website",
             "types"
     };
@@ -108,9 +108,9 @@ public class TourFragment extends android.support.v4.app.Fragment {
 
 
 
-        nameView.setText("test");
-        nameView.setText(placeDetails);
-        nameView.setMovementMethod(new ScrollingMovementMethod());
+//        nameView.setText("test");
+//        nameView.setText(placeDetails);
+//        nameView.setMovementMethod(new ScrollingMovementMethod());
 
         return view;
     }
@@ -120,20 +120,37 @@ public class TourFragment extends android.support.v4.app.Fragment {
         String adr = "";
         String phone = "";
         String open = "";
-        String[] openTime = {};
+//        String[] openTime = {};
         String web = "";
-        String[] types = {};
+//        String[] types = {};
 
-        JSONArray place = null;
+        JSONObject jplace = null;
 
 
         try{
-            place = results.getJSONArray("results");
+            jplace = results.getJSONObject("result");
 
-            if(!place.isNull(jsonAttrib[0].toString())){
+            int i = 0;
+//            if(!jplace.isNull("name"){
+            name = jplace.getString(jsonAttrib[i++]);
 
 
-            }
+//            if(!jplace.isNull(jsonAttrib[i])){
+                adr = jplace.getString(jsonAttrib[i++]);
+
+//            }
+            phone = jplace.getString(jsonAttrib[i++]);
+
+
+            JSONArray jtime = jplace.getJSONArray("opening_hours");
+            Log.d(TAG,""+ jtime.get(0));
+//            JSONObject jtim = jtime.get(0);
+//            open = jtime.get(0).getString(jsonAttrib[i++]);
+//            openTime = jplace.getString(jsonAttrib[i++]);
+
+
+
+//            }
 
 
         }
@@ -142,6 +159,12 @@ public class TourFragment extends android.support.v4.app.Fragment {
 
 
         }
+        nameView.setText(name);
+        adressView.setText(adr);
+        phoneView.setText(phone);
+        openView.setText(open);
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -191,7 +214,7 @@ public class TourFragment extends android.support.v4.app.Fragment {
         Log.d(TAG, "presentDetials got called");
         placeDetails = result;
 
-        nameView.setText(result);
+//        nameView.setText(result);
 
 
     }
