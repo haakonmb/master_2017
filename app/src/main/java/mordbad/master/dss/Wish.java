@@ -1,4 +1,4 @@
-package mordbad.master;
+package mordbad.master.dss;
 
 import java.util.Date;
 

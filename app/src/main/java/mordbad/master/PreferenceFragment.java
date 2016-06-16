@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import mordbad.master.dss.Wish;
 
 
 /**
@@ -27,6 +27,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "PreferenceFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;

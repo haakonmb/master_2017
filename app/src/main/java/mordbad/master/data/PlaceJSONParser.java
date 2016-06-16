@@ -1,4 +1,4 @@
-package mordbad.master;
+package mordbad.master.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;

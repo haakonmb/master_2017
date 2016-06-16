@@ -29,8 +29,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
-import mordbad.master.dss.Gatherer;
+import mordbad.master.data.Gatherer;
 import mordbad.master.dss.Reasoner;
+import mordbad.master.dss.Wish;
 
 public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
