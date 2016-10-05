@@ -16,35 +16,35 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+ 100 xp"
-        android:id="@+id/button"
+        android:text="Next"
+        android:id="@+id/next"
         android:layout_gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="112dp" />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/checkBox"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginTop="40dp"
-        android:layout_below="@+id/levelTextView"
-        android:layout_centerHorizontal="true" />
 
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment"
         android:id="@+id/mPrefTextView"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/button" />
+        android:layout_toEndOf="@+id/next" />
 
-    <DatePicker
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/datePicker"
-        android:layout_below="@+id/checkBox"
-        android:layout_alignParentStart="true" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/qView"
+        android:layout_alignStart="@+id/mPrefTextView"
+        android:layout_marginTop="29dp"
+        android:layout_below="@+id/levelTextView" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/qView" />
 
 </RelativeLayout>

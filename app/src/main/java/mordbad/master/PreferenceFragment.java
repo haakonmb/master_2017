@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import mordbad.master.dss.Question;
 import mordbad.master.dss.Wish;
 
 
@@ -36,14 +38,13 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private OnFragmentInteractionListener mListener;
 
     private Wish wish = new Wish();
-    private int level = 1;
-    private int xp = 0;
-    private int levelUpXpCount= 1000;
+    private Question[] questions ;
 
     private Button mButton;
-    private TextView mXpView;
+    private TextView mqView;
     private TextView mLevelView;
     private CheckBox mCheckBox;
+    private Spinner mSpinner;
 
     /**
      * Use this factory method to create a new instance of
@@ -82,20 +83,20 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
 
+        //TODO: oppdater for henting av spm fra databasen, istedenfor test-spm
+        questions = new Question[]{new Question("a?",new String[]{"a","b","c"}), new Question("b?",new String[]{"a","b","c"})};
 
         //Find all the things
-        mButton = (Button) view.findViewById(R.id.button);
-        mXpView = (TextView) view.findViewById(R.id.mPrefTextView);
+        mButton = (Button) view.findViewById(R.id.next);
+        mqView = (TextView) view.findViewById(R.id.qView);
         mLevelView = (TextView) view.findViewById(R.id.levelTextView);
         mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
+        mSpinner = (Spinner) view.findViewById(R.id.spinner);
 
         //Make them listen!
         mButton.setOnClickListener(this);
         mCheckBox.setOnClickListener(this);
 
-        mLevelView.setText(String.valueOf(level));
-
-        mXpView.setText(String.valueOf(xp));
 
         return view;
     }
@@ -134,8 +135,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             //TODO Legg til knapper og funksjonalitet for fragmentet
 
 
-            case R.id.button:
-                addXp();
+            case R.id.next:
+
                 break;
 
 
@@ -145,15 +146,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         }
     }
 
-    void addXp() {
-        xp += 100;
-        if(xp > levelUpXpCount){
-            level +=1;
-            levelUpXpCount = level * 1000;
-            mLevelView.setText(String.valueOf(level));
-        }
-        mXpView.setText(String.valueOf(xp));
-    }
+
 
     /**
      * This interface must be implemented by activities that contain this
