@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
@@ -39,12 +42,16 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
     private Wish wish = new Wish();
     private Question[] questions ;
+    private int currentQNum =0;
+    private String currentQ;
+    private String[] currentQOpts;
 
     private Button mButton;
     private TextView mqView;
     private TextView mLevelView;
-    private CheckBox mCheckBox;
+
     private Spinner mSpinner;
+    private boolean QuestionareDone = false;
 
     /**
      * Use this factory method to create a new instance of
@@ -84,18 +91,43 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
 
         //TODO: oppdater for henting av spm fra databasen, istedenfor test-spm
-        questions = new Question[]{new Question("a?",new String[]{"a","b","c"}), new Question("b?",new String[]{"a","b","c"})};
+        questions = new Question[]{new Question("a?",new String[]{"a","b","c"}), new Question("b?",new String[]{"1","2","3"})};
 
         //Find all the things
         mButton = (Button) view.findViewById(R.id.next);
         mqView = (TextView) view.findViewById(R.id.qView);
         mLevelView = (TextView) view.findViewById(R.id.levelTextView);
-        mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+
         mSpinner = (Spinner) view.findViewById(R.id.spinner);
+        updateQuestions();
+
 
         //Make them listen!
         mButton.setOnClickListener(this);
-        mCheckBox.setOnClickListener(this);
+
+
+
+
+
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.d(TAG, "Spinner clicked");
+
+
+                mSpinner.setSelection(position);
+                Log.d(TAG,"spinnerPos: "+ mSpinner.getSelectedItemPosition());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.d(TAG, "Spinner nothing selected");
+            }
+        });
 
 
         return view;
@@ -136,7 +168,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
 
             case R.id.next:
-
+                Log.d(TAG,"Question answered presumably");
+                nextQuestion();
                 break;
 
 
@@ -146,6 +179,53 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         }
     }
 
+    private void nextQuestion() {
+        //Update answer on current q
+        boolean successful =false;
+        successful = questions[currentQNum].setAnswer(mSpinner.getSelectedItemPosition());
+        Log.d(TAG,"Success?: "+successful);
+        //Question answered successfully?
+        if(successful){
+
+            Log.d(TAG,"Inside successful if");
+            //Are there questions left?
+            if(currentQNum+1 < questions.length){
+                //Go to next question
+                currentQNum++;
+                updateQuestions();
+                Log.d(TAG, "there are questions left num: "+currentQNum + " "+ questions.length);
+
+            }
+            //Finished with questions
+            else{
+                QuestionareDone = true;
+                Log.d(TAG, "finished with questions" + QuestionareDone);
+                //TODO: getDayPlan(withAnswers);
+            }
+
+
+        }
+        else{
+            Log.d(TAG,"You up shit creek without a paddle, son. Also known as: problems with nextQuestion-method and spinner.selectedItemPos");
+        }
+
+
+    }
+
+    private void updateQuestions() {
+        currentQ = questions[currentQNum].getQuestion();
+        currentQOpts = questions[currentQNum].getOptions();
+        mqView.setText(currentQ);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentQOpts);
+
+        // Getting reference to the Spinner
+
+        // Setting adapter on Spinner to set question options
+        mSpinner.setAdapter(adapter);
+
+        Log.d(TAG,"Qs have been upped. " + currentQ);
+    }
 
 
     /**
