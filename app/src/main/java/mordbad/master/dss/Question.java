@@ -4,6 +4,8 @@ package mordbad.master.dss;
  * Created by haakon on 30/09/16.
  */
 public class Question {
+
+
     String question ="";
     String[] option;
     String answer ="N/A";
@@ -34,8 +36,16 @@ public class Question {
 
     }
 
+    public String getQuestion() {
+        return question;
+    }
+
     public String getAnswer(){
         return answer;
+    }
+
+    public String[] getOptions(){
+        return option;
     }
 
 
