@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                 break;
 
             case 4:
-                prefFragment.addXp();
+
                 break;
 
             default:

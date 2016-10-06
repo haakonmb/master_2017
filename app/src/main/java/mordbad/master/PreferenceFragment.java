@@ -202,7 +202,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
                 Log.d(TAG, "finished with questions" + QuestionareDone);
                 //TODO: getDayPlan(withAnswers);
             }
-
+            updateQuestions();
 
         }
         else{
@@ -213,19 +213,48 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     }
 
     private void updateQuestions() {
-        currentQ = questions[currentQNum].getQuestion();
-        currentQOpts = questions[currentQNum].getOptions();
-        mqView.setText(currentQ);
+        if(QuestionareDone){
+            String newStr = "";
+            for(Question q : questions){
+                String currentStr = (String)mLevelView.getText();
+                String concatStr = q.getAnswer();
+                newStr = currentStr+"\n"+concatStr;
+                mLevelView.setText(newStr);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentQOpts);
+            }
 
-        // Getting reference to the Spinner
+            Log.d(TAG,newStr);
 
-        // Setting adapter on Spinner to set question options
-        mSpinner.setAdapter(adapter);
+            //Change visibility
+            mqView.setVisibility(TextView.INVISIBLE);
+            mSpinner.setVisibility(Spinner.INVISIBLE);
+            mLevelView.setVisibility(TextView.VISIBLE);
 
-        Log.d(TAG,"Qs have been upped. " + currentQ);
+
+        }
+        else{
+            currentQ = questions[currentQNum].getQuestion();
+            currentQOpts = questions[currentQNum].getOptions();
+            mqView.setText(currentQ);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentQOpts);
+
+            // Getting reference to the Spinner
+
+            // Setting adapter on Spinner to set question options
+            mSpinner.setAdapter(adapter);
+
+            //Change visibility
+            mqView.setVisibility(TextView.VISIBLE);
+            mSpinner.setVisibility(Spinner.VISIBLE);
+            mLevelView.setVisibility(TextView.INVISIBLE);
+
+            Log.d(TAG,"Qs have been upped. " + currentQ);
+        }
+
+
     }
+
 
 
     /**
