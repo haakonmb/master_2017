@@ -91,7 +91,11 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
 
         //TODO: oppdater for henting av spm fra databasen, istedenfor test-spm
-        questions = new Question[]{new Question("a?",new String[]{"a","b","c"}), new Question("b?",new String[]{"1","2","3"})};
+        questions = new Question[]{
+                new Question("Er du sulten?",new String[]{"Ja","Nei","Fåglarne vet"}),
+                new Question("Liker du fisk?",new String[]{"Ja","Nei","Eplekake"}),
+                new Question("Hvilken nasjonalitet er du?",new String[]{"Norsk","Kinesisk","Eplekake"}),
+                new Question("Burde denne spørsmålsrunden vært på engelsk?",new String[]{"Ja",})};
 
         //Find all the things
         mButton = (Button) view.findViewById(R.id.next);
@@ -140,6 +144,13 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         }
     }
 
+    //this is where app should save important info. Call mListener and pass it on.
+    @Override
+    public void onPause(){
+
+    }
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -187,7 +198,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         //Question answered successfully?
         if(successful){
 
-            Log.d(TAG,"Inside successful if");
+            Log.d(TAG, "Inside successful if");
             //Are there questions left?
             if(currentQNum+1 < questions.length){
                 //Go to next question
