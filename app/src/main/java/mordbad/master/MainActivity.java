@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
     String[] activites = {"Arts & Culture", "Business", "Community", "Education",};
-    private Location mLastLocation;
+    private Location mLastLocation = new Location("Turn on your gps");
 
     //TODO change to more accurate type. Ref onConnected() for details
     private TextView mLatitudeText;
