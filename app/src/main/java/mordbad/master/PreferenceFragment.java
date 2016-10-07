@@ -253,6 +253,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             mqView.setVisibility(TextView.INVISIBLE);
             mSpinner.setVisibility(Spinner.INVISIBLE);
             mLevelView.setVisibility(TextView.VISIBLE);
+            mNext.setVisibility(Button.INVISIBLE);
 
             showingAnswer = true;
 
@@ -275,6 +276,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             mqView.setVisibility(TextView.VISIBLE);
             mSpinner.setVisibility(Spinner.VISIBLE);
             mLevelView.setVisibility(TextView.INVISIBLE);
+            mNext.setVisibility(Button.VISIBLE);
 
 
             Log.d(TAG,"Qs have been upped. " + currentQ);
