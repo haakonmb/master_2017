@@ -146,7 +146,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     //this is where app should save important info. Call mListener and pass it on.
     @Override
     public void onPause(){
-
+        super.onPause();
     }
 
 
