@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -46,12 +45,14 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private String currentQ;
     private String[] currentQOpts;
 
-    private Button mButton;
+    private Button mNext;
+    private Button mClear;
     private TextView mqView;
     private TextView mLevelView;
 
     private Spinner mSpinner;
     private boolean QuestionareDone = false;
+    private boolean showingAnswer = false;
 
     /**
      * Use this factory method to create a new instance of
@@ -91,6 +92,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
 
         //TODO: oppdater for henting av spm fra databasen, istedenfor test-spm
+        //Get the questions for css
         questions = new Question[]{
                 new Question("Er du sulten?",new String[]{"Ja","Nei","Fåglarne vet"}),
                 new Question("Liker du fisk?",new String[]{"Ja","Nei","Eplekake"}),
@@ -98,7 +100,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
                 new Question("Burde denne spørsmålsrunden vært på engelsk?",new String[]{"Ja",})};
 
         //Find all the things
-        mButton = (Button) view.findViewById(R.id.next);
+        mNext = (Button) view.findViewById(R.id.next);
+        mClear =(Button) view.findViewById(R.id.Clear);
         mqView = (TextView) view.findViewById(R.id.qView);
         mLevelView = (TextView) view.findViewById(R.id.levelTextView);
 
@@ -108,12 +111,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
 
         //Make them listen!
-        mButton.setOnClickListener(this);
-
-
-
-
-
+        mNext.setOnClickListener(this);
+        mClear.setOnClickListener(this);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -123,7 +122,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
 
                 mSpinner.setSelection(position);
-                Log.d(TAG,"spinnerPos: "+ mSpinner.getSelectedItemPosition());
+                Log.d(TAG, "spinnerPos: " + mSpinner.getSelectedItemPosition());
 
             }
 
@@ -183,6 +182,10 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
                 nextQuestion();
                 break;
 
+            case R.id.Clear:
+                Log.d(TAG,"Clear pressed");
+                clearQuestion();
+                break;
 
           //  default:
             //    throw new RuntimeException("Unknown Button ID");
@@ -190,11 +193,21 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         }
     }
 
+
+    //resets the questinoare
+    private void clearQuestion() {
+        QuestionareDone = false;
+        showingAnswer = false;
+        currentQNum = 0;
+        mLevelView.setText("");
+        updateQuestions();
+    }
+
     private void nextQuestion() {
         //Update answer on current q
         boolean successful =false;
         successful = questions[currentQNum].setAnswer(mSpinner.getSelectedItemPosition());
-        Log.d(TAG,"Success?: "+successful);
+        Log.d(TAG, "Success?: " + successful);
         //Question answered successfully?
         if(successful){
 
@@ -224,7 +237,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     }
 
     private void updateQuestions() {
-        if(QuestionareDone){
+
+        if(QuestionareDone && !showingAnswer){
             String newStr = "";
             for(Question q : questions){
                 String currentStr = (String)mLevelView.getText();
@@ -234,16 +248,19 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
             }
 
-            Log.d(TAG,newStr);
+            Log.d(TAG, newStr);
 
-            //Change visibility
             mqView.setVisibility(TextView.INVISIBLE);
             mSpinner.setVisibility(Spinner.INVISIBLE);
             mLevelView.setVisibility(TextView.VISIBLE);
 
+            showingAnswer = true;
 
         }
-        else{
+        else if(!QuestionareDone){
+            if(showingAnswer){
+                mLevelView.setText("");
+            }
             currentQ = questions[currentQNum].getQuestion();
             currentQOpts = questions[currentQNum].getOptions();
             mqView.setText(currentQ);
@@ -255,16 +272,43 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             // Setting adapter on Spinner to set question options
             mSpinner.setAdapter(adapter);
 
+            mqView.setVisibility(TextView.VISIBLE);
+            mSpinner.setVisibility(Spinner.VISIBLE);
+            mLevelView.setVisibility(TextView.INVISIBLE);
+
+
+            Log.d(TAG,"Qs have been upped. " + currentQ);
+        }
+
+        //toggleVisibility(QuestionareDone);
+
+
+    }
+
+    //TODO: needs debug for use-cases. THings not visible
+    //Change visibility based on status.
+    //True makes questions visible
+    //False makes invisible
+    private void toggleVisibility(boolean status){
+        if(status){
             //Change visibility
             mqView.setVisibility(TextView.VISIBLE);
             mSpinner.setVisibility(Spinner.VISIBLE);
             mLevelView.setVisibility(TextView.INVISIBLE);
 
-            Log.d(TAG,"Qs have been upped. " + currentQ);
+        }
+        else{
+            //Change visibility
+            mqView.setVisibility(TextView.INVISIBLE);
+            mSpinner.setVisibility(Spinner.INVISIBLE);
+            mLevelView.setVisibility(TextView.VISIBLE);
+
         }
 
 
     }
+
+
 
 
 
