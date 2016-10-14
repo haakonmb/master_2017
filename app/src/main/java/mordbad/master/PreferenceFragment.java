@@ -51,7 +51,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private TextView mLevelView;
 
     private Spinner mSpinner;
-    private boolean QuestionareDone = false;
+    private boolean questionareDone = false;
     private boolean showingAnswer = false;
 
     /**
@@ -194,9 +194,9 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     }
 
 
-    //resets the questinoare
+    //resets the questionare
     private void clearQuestion() {
-        QuestionareDone = false;
+        questionareDone = false;
         showingAnswer = false;
         currentQNum = 0;
         mLevelView.setText("");
@@ -222,8 +222,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             }
             //Finished with questions
             else{
-                QuestionareDone = true;
-                Log.d(TAG, "finished with questions" + QuestionareDone);
+                questionareDone = true;
+                Log.d(TAG, "finished with questions" + questionareDone);
                 //TODO: getDayPlan(withAnswers);
             }
             updateQuestions();
@@ -238,7 +238,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
     private void updateQuestions() {
 
-        if(QuestionareDone && !showingAnswer){
+        if(questionareDone && !showingAnswer){
             String newStr = "";
             for(Question q : questions){
                 String currentStr = (String)mLevelView.getText();
@@ -258,7 +258,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             showingAnswer = true;
 
         }
-        else if(!QuestionareDone){
+        else if(!questionareDone){
             if(showingAnswer){
                 mLevelView.setText("");
             }
@@ -282,7 +282,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             Log.d(TAG,"Qs have been upped. " + currentQ);
         }
 
-        //toggleVisibility(QuestionareDone);
+        //toggleVisibility(questionareDone);
 
 
     }
