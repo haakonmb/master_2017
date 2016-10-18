@@ -45,7 +45,7 @@
     </string-array>
 
 
-    <string-array name="all-place-types">
+    <string-array name="all_place_types">
         <item>accounting</item>
         <item>airport</item>
         <item>amusement_park</item>
