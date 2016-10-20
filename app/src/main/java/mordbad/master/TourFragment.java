@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -44,6 +47,12 @@ public class TourFragment extends android.support.v4.app.Fragment {
     TextView openTimeView;
     TextView websiteView;
     TextView typesView;
+
+    Spinner one;
+    Spinner two;
+    Spinner three;
+    Spinner four;
+    Spinner five;
 
     String placeDetails = "";
 
@@ -103,6 +112,19 @@ public class TourFragment extends android.support.v4.app.Fragment {
         websiteView = (TextView) view.findViewById(R.id.textView5);
         typesView = (TextView) view.findViewById(R.id.textView6);
 
+        // Getting reference to the Spinner
+
+        one = (Spinner) view.findViewById(R.id.spinner);
+        two = (Spinner) view.findViewById(R.id.spinner2);
+        three = (Spinner) view.findViewById(R.id.spinner3);
+        four= (Spinner) view.findViewById(R.id.spinner4);
+        five = (Spinner) view.findViewById(R.id.spinner5);
+
+        String[] allPlaceTypes = getResources().getStringArray(R.array.all_place_types);
+        Spinner[] spinners = {one, two, three, four, five};
+
+        // Setting adapter on Spinner to set question options
+        spinnerSetClickAndContent(spinners,allPlaceTypes);
 
         populate();
 
@@ -113,6 +135,35 @@ public class TourFragment extends android.support.v4.app.Fragment {
 //        nameView.setMovementMethod(new ScrollingMovementMethod());
 
         return view;
+    }
+
+    private void spinnerSetClickAndContent(Spinner[] spinners, String[] contents) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, contents);
+
+        for(final Spinner s: spinners){
+            s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    Log.d(TAG, "Spinner clicked");
+
+
+                    s.setSelection(position);
+                    Log.d(TAG, "spinnerPos: " + s.getSelectedItemPosition());
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    Log.d(TAG, "Spinner nothing selected");
+                }
+            });
+
+            s.setAdapter(adapter);
+        }
+
+
     }
 
     private void populate() {
