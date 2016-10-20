@@ -17,6 +17,8 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import mordbad.master.dss.Reasoner;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +40,8 @@ public class TourFragment extends android.support.v4.app.Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Reasoner mReasoner;
     JSONObject results = null;
 
     TextView nameView;
@@ -113,7 +117,6 @@ public class TourFragment extends android.support.v4.app.Fragment {
         typesView = (TextView) view.findViewById(R.id.textView6);
 
         // Getting reference to the Spinner
-
         one = (Spinner) view.findViewById(R.id.spinner);
         two = (Spinner) view.findViewById(R.id.spinner2);
         three = (Spinner) view.findViewById(R.id.spinner3);
@@ -125,6 +128,8 @@ public class TourFragment extends android.support.v4.app.Fragment {
 
         // Setting adapter on Spinner to set question options
         spinnerSetClickAndContent(spinners,allPlaceTypes);
+
+        mReasoner = new Reasoner(allPlaceTypes);
 
         populate();
 
