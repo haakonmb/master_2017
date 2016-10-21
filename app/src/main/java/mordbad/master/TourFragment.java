@@ -130,7 +130,51 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         mButton.setOnClickListener( this);
 
 
-        String[] generations = {};
+        Integer[] generations = {1,2,3,4,5,6,7,8,9,10,11};
+
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getContext(), android.R.layout.simple_spinner_dropdown_item, generations);
+
+
+        one.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.d(TAG, "Spinner clicked");
+
+
+                one.setSelection(position);
+                Log.d(TAG, "spinnerPos: " + one.getSelectedItemPosition());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.d(TAG, "Spinner nothing selected");
+            }
+        });
+        one.setAdapter(adapter);
+
+        two.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.d(TAG, "Spinner clicked");
+
+
+                two.setSelection(position);
+                Log.d(TAG, "spinnerPos: " + two.getSelectedItemPosition());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.d(TAG, "Spinner nothing selected");
+            }
+        });
+        two.setAdapter(adapter);
 
         String[] allPlaceTypes = getResources().getStringArray(R.array.all_place_types);
         Spinner[] spinners = {three, four, five};
@@ -305,8 +349,12 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
 
     private void printResult() {
         String result;
+        int gen = (int) one.getSelectedItem();
+        int fitness = (int) two.getSelectedItem();
 
-        result = mReasoner.getResult(6, 6);
+        Log.d(TAG, "gen :" + gen + " fitness:" +fitness);
+
+        result = mReasoner.getResult(gen, fitness);
         Log.d(TAG,""+result);
         nameView.setText(result);
     }
