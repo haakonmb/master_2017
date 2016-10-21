@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ import mordbad.master.dss.Reasoner;
  * Use the {@link TourFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TourFragment extends android.support.v4.app.Fragment {
+public class TourFragment extends android.support.v4.app.Fragment implements Button.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -51,6 +52,8 @@ public class TourFragment extends android.support.v4.app.Fragment {
     TextView openTimeView;
     TextView websiteView;
     TextView typesView;
+
+    Button mButton;
 
     Spinner one;
     Spinner two;
@@ -123,8 +126,14 @@ public class TourFragment extends android.support.v4.app.Fragment {
         four= (Spinner) view.findViewById(R.id.spinner4);
         five = (Spinner) view.findViewById(R.id.spinner5);
 
+        mButton = (Button) view.findViewById(R.id.button);
+        mButton.setOnClickListener( this);
+
+
+        String[] generations = {};
+
         String[] allPlaceTypes = getResources().getStringArray(R.array.all_place_types);
-        Spinner[] spinners = {one, two, three, four, five};
+        Spinner[] spinners = {three, four, five};
 
         // Setting adapter on Spinner to set question options
         spinnerSetClickAndContent(spinners,allPlaceTypes);
@@ -276,9 +285,31 @@ public class TourFragment extends android.support.v4.app.Fragment {
     }
 
 
+    @Override
+    public void onClick(View v){
+
+        switch(v.getId()){
+            case R.id.button:
+                printResult();
+                break;
 
 
 
+
+
+
+        }
+
+
+    }
+
+    private void printResult() {
+        String result;
+
+        result = mReasoner.getResult(6, 6);
+        Log.d(TAG,""+result);
+        nameView.setText(result);
+    }
 
 
     /**
