@@ -20,6 +20,7 @@ import org.uncommons.watchmaker.framework.operators.StringCrossover;
 import org.uncommons.watchmaker.framework.operators.StringMutation;
 import org.uncommons.watchmaker.framework.selection.RouletteWheelSelection;
 import org.uncommons.maths.random.MersenneTwisterRNG;
+import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 import org.uncommons.watchmaker.framework.termination.TargetFitness;
 
 //import mordbad.master.R;
@@ -122,9 +123,9 @@ public class Reasoner {
     }
 
 
-    public String getResult(int generations, int targetfitness){
+    public String getResult(int population, int targetfitness){
 
-        result = engine.evolve(generations,0, new TargetFitness(targetfitness, true));
+        result = engine.evolve(population,0, new TargetFitness(targetfitness, true), new ElapsedTime(45000));
 
         return result;
     }

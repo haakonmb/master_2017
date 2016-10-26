@@ -130,7 +130,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         mButton.setOnClickListener( this);
 
 
-        Integer[] generations = {1,2,3,4,5,6,7,8,9,10,11};
+        Integer[] generations = {1,2,3,4,5,6,7,8,9,10,11,12,13,50,80,100,200,400,500,1000};
 
 
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getContext(), android.R.layout.simple_spinner_dropdown_item, generations);
