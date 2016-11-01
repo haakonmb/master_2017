@@ -8,7 +8,7 @@ import java.util.Random;
  * Created by haakon on 01/11/16.
  */
 
-public class PlaceFactory extends AbstractCandidateFactory {
+public class PlaceFactory<T> extends AbstractCandidateFactory<int[]> {
 
     private int bound = 90;
 
@@ -19,7 +19,7 @@ public class PlaceFactory extends AbstractCandidateFactory {
 
 
     @Override
-    public Object generateRandomCandidate(Random random) {
+    public int[] generateRandomCandidate(Random random) {
         //TODO: make size of array be configurable easily
         int[] candidate= {random.nextInt(bound),random.nextInt(bound),random.nextInt(bound),random.nextInt(bound),random.nextInt(bound)};
 
