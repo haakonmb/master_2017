@@ -15,6 +15,7 @@ import org.uncommons.watchmaker.framework.factories.BitStringFactory;
 import org.uncommons.watchmaker.framework.factories.ObjectArrayPermutationFactory;
 import org.uncommons.watchmaker.framework.factories.StringFactory;
 import org.uncommons.watchmaker.framework.operators.EvolutionPipeline;
+import org.uncommons.watchmaker.framework.operators.IntArrayCrossover;
 import org.uncommons.watchmaker.framework.operators.ObjectArrayCrossover;
 import org.uncommons.watchmaker.framework.operators.StringCrossover;
 import org.uncommons.watchmaker.framework.operators.StringMutation;
@@ -43,7 +44,7 @@ public class Reasoner {
     private PlaceEvaluator pe;
     private MersenneTwisterRNG mRng;
     EvolutionEngine<String> engine;
-
+    private String[] candidates;
 
     public Reasoner(){};
 
@@ -58,53 +59,20 @@ public class Reasoner {
     A Fitness Evaluator
     A Selection Strategy
     A Random Number Generator
-
      */
+        this.candidates = candidates;
 
 
-        /*       //Candidate factory
-        ObjectArrayPermutationFactory<String> factory = new ObjectArrayPermutationFactory<>(candidates);
-
-        //Evolutionary Operator
-        EvolutionaryOperator<String> operator = new ObjectArrayCrossover<T>();
-
-        List<EvolutionaryOperator<String>> test = new LinkedList<>();
-        //test.add()
-
-        //Fitness Evaluator
-        pe = new PlaceEvaluator();
+        PlaceFactory factory = new PlaceFactory();
+//      Create a pieline that apllies cross-over mutation
+//         List<EvolutionaryOperator<String>> operators= new LinkedList<>();
+//        operators.add(new StringMutation(chars, new Probability(0.22)));
+//        operators.add(new StringCrossover());
+//        EvolutionaryOperator<String> pipeline = new EvolutionPipeline<>(operators);
 
 
-        //Selection Strategy
-        RouletteWheelSelection rouletteWheelSelection = new RouletteWheelSelection();
-
-        //Random number generator
-        mRng = new MersenneTwisterRNG();
-
-       // EvolutionEngine<String> engine = new GenerationalEvolutionEngine<String>(factory,pe,rouletteWheelSelection,mRng);
-        //private EvolutionEngine<BitStringFactory> test = new GenerationalEvolutionEngine<BitStringFactory>();
-*/
-
-
-        char[] chars = new char[27];
-
-        for(char c ='A'; c<= 'Z';c++){
-            chars[c-'A'] = c;
-
-        }
-        chars[26] = ' ';
-        CandidateFactory<String> factory = new StringFactory(chars, 11);
-
-        //Create a pieline that apllies cross-over mutation
-        List<EvolutionaryOperator<String>> operators= new LinkedList<>();
-
-        operators.add(new StringMutation(chars, new Probability(0.22)));
-
-        operators.add(new StringCrossover());
-
-        EvolutionaryOperator<String> pipeline = new EvolutionPipeline<>(operators);
-
-        FitnessEvaluator<String> fitnessEvaluator = new StringEvaluator();
+        EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
+        FitnessEvaluator<int[]> fitnessEvaluator = new PlaceEvaluator();
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
         Random rng = new MersenneTwisterRNG();
 
@@ -113,19 +81,12 @@ public class Reasoner {
                                                       fitnessEvaluator,
                                                       selection,
                                                       rng);
-
-
-
-
-
-
-
     }
 
 
-    public String getResult(int population, int targetfitness){
+    public String getResult(int population){
 
-        result = engine.evolve(population,0, new TargetFitness(targetfitness, true), new ElapsedTime(45000));
+        result = engine.evolve(population,0, new ElapsedTime(30000));
 
         return result;
     }

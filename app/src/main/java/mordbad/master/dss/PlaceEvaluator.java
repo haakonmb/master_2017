@@ -8,10 +8,23 @@ import java.util.List;
  * Created by haakon on 20/10/16.
  */
 
-public class PlaceEvaluator implements FitnessEvaluator<String> {
+public class PlaceEvaluator implements FitnessEvaluator<int[]> {
+
+
     @Override
-    public double getFitness(String s, List<? extends String> list) {
-        return 0;
+    public double getFitness(int[] ints, List<? extends int[]> list) {
+        //TODO: implement actual fitness-score in a good way
+        int matches =0;
+        int max = 90*ints.length;
+        int candidate = 0;
+        for(int n: ints){
+            candidate+=n;
+
+        }
+        matches = max - candidate;
+
+
+        return matches;
     }
 
     @Override

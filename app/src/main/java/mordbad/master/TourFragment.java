@@ -350,11 +350,10 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
     private void printResult() {
         String result;
         int gen = (int) one.getSelectedItem();
-        int fitness = (int) two.getSelectedItem();
 
-        Log.d(TAG, "gen :" + gen + " fitness:" +fitness);
+        Log.d(TAG, "gen :" + gen );
 
-        result = mReasoner.getResult(gen, fitness);
+        result = mReasoner.getResult(gen);
         Log.d(TAG,""+result);
         nameView.setText(result);
     }
