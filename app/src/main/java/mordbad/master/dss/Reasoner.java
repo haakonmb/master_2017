@@ -45,6 +45,8 @@ public class Reasoner {
     private MersenneTwisterRNG mRng;
     EvolutionEngine<String> engine;
     private String[] candidates;
+    private int length = 90;
+
 
     public Reasoner(){};
 
@@ -61,9 +63,9 @@ public class Reasoner {
     A Random Number Generator
      */
         this.candidates = candidates;
+        length = candidates.length;
 
-
-        PlaceFactory factory = new PlaceFactory();
+        PlaceFactory factory = new PlaceFactory(length);
 //      Create a pieline that apllies cross-over mutation
 //         List<EvolutionaryOperator<String>> operators= new LinkedList<>();
 //        operators.add(new StringMutation(chars, new Probability(0.22)));
@@ -72,7 +74,7 @@ public class Reasoner {
 
 
         EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
-        FitnessEvaluator<int[]> fitnessEvaluator = new PlaceEvaluator();
+        FitnessEvaluator<int[]> fitnessEvaluator = new PlaceEvaluator(length);
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
         Random rng = new MersenneTwisterRNG();
 

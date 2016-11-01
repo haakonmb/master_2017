@@ -12,8 +12,8 @@ public class PlaceFactory extends AbstractCandidateFactory {
 
     private int bound = 90;
 
-    public PlaceFactory(String[] candidates){
-        bound = candidates.length;
+    public PlaceFactory(int candidates){
+        bound = candidates;
 
     }
 
