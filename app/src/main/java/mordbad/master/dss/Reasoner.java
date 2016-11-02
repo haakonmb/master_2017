@@ -14,6 +14,7 @@ import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 
 //import mordbad.master.R;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import mordbad.master.data.Gatherer;
@@ -71,6 +72,38 @@ public class Reasoner {
                                                       rng);
     }
 
+
+    public Reasoner(String[] candidates, HashMap<Integer,Integer> weights) {
+        /*
+        What watchmaker needs:
+    A Candidate Factory
+    An Evolutionary Operator
+    A Fitness Evaluator
+    A Selection Strategy
+    A Random Number Generator
+     */
+        this.candidates = candidates;
+        length = candidates.length;
+
+        PlaceFactory factory = new PlaceFactory<int[]>(length);
+//      Create a pieline that apllies cross-over mutation
+//         List<EvolutionaryOperator<String>> operators= new LinkedList<>();
+//        operators.add(new StringMutation(chars, new Probability(0.22)));
+//        operators.add(new StringCrossover());
+//        EvolutionaryOperator<String> pipeline = new EvolutionPipeline<>(operators);
+
+
+        EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
+        FitnessEvaluator<int[]> fitnessEvaluator = new PlaceEvaluator(length);
+        SelectionStrategy<Object> selection = new RouletteWheelSelection();
+        Random rng = new MersenneTwisterRNG();
+
+        engine = new GenerationalEvolutionEngine<int[]>(factory,
+                pipeline,
+                fitnessEvaluator,
+                selection,
+                rng);
+    }
 
     public int[] getResult(int population){
         int[] candidate = engine.evolve(population,0, new ElapsedTime(5000));

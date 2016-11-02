@@ -2,6 +2,7 @@ package mordbad.master.dss;
 
 import org.uncommons.watchmaker.framework.FitnessEvaluator;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -12,13 +13,18 @@ public class PlaceEvaluator implements FitnessEvaluator<int[]> {
 
 
     private int length = 90;
+    private HashMap<Integer,Integer> weights;
+
 
     public PlaceEvaluator(int length){
         this.length = length;
 
-
     }
 
+    public PlaceEvaluator(int length, HashMap<Integer,Integer> weight){
+        this.length = length;
+        this.weights = weight;
+    }
 
     @Override
     public double getFitness(int[] ints, List<? extends int[]> list) {
