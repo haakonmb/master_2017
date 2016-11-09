@@ -17,8 +17,7 @@
         android:layout_height="match_parent"
         android:id="@+id/navList"
         android:layout_gravity="left|start"
-        android:background="#ffeeeeee"
-        ></ListView>
+        android:background="@android:color/background_dark"></ListView>
 
 </android.support.v4.widget.DrawerLayout>
 

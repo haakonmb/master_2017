@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import mordbad.master.dss.Question;
+import mordbad.master.dss.Wish;
 
 
 /**
@@ -27,6 +31,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "PreferenceFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -35,14 +40,19 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private OnFragmentInteractionListener mListener;
 
     private Wish wish = new Wish();
-    private int level = 1;
-    private int xp = 0;
-    private int levelUpXpCount= 1000;
+    private Question[] questions ;
+    private int currentQNum =0;
+    private String currentQ;
+    private String[] currentQOpts;
 
-    private Button mButton;
-    private TextView mXpView;
+    private Button mNext;
+    private Button mClear;
+    private TextView mqView;
     private TextView mLevelView;
-    private CheckBox mCheckBox;
+
+    private Spinner mSpinner;
+    private boolean questionareDone = false;
+    private boolean showingAnswer = false;
 
     /**
      * Use this factory method to create a new instance of
@@ -81,20 +91,47 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
 
+        //TODO: oppdater for henting av spm fra databasen, istedenfor test-spm
+        //Get the questions for css
+        questions = new Question[]{
+                new Question("Er du sulten?",new String[]{"Ja","Nei","Fåglarne vet"}),
+                new Question("Liker du fisk?",new String[]{"Ja","Nei","Eplekake"}),
+                new Question("Hvilken nasjonalitet er du?",new String[]{"Norsk","Kinesisk","Eplekake"}),
+                new Question("Burde denne spørsmålsrunden vært på engelsk?",new String[]{"Ja",})};
 
         //Find all the things
-        mButton = (Button) view.findViewById(R.id.button);
-        mXpView = (TextView) view.findViewById(R.id.mPrefTextView);
+        mNext = (Button) view.findViewById(R.id.next);
+        mClear =(Button) view.findViewById(R.id.Clear);
+        mqView = (TextView) view.findViewById(R.id.qView);
         mLevelView = (TextView) view.findViewById(R.id.levelTextView);
-        mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+
+        mSpinner = (Spinner) view.findViewById(R.id.spinner);
+        updateQuestions();
+
 
         //Make them listen!
-        mButton.setOnClickListener(this);
-        mCheckBox.setOnClickListener(this);
+        mNext.setOnClickListener(this);
+        mClear.setOnClickListener(this);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        mLevelView.setText(String.valueOf(level));
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.d(TAG, "Spinner clicked");
 
-        mXpView.setText(String.valueOf(xp));
+
+                mSpinner.setSelection(position);
+                Log.d(TAG, "spinnerPos: " + mSpinner.getSelectedItemPosition());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.d(TAG, "Spinner nothing selected");
+            }
+        });
+
 
         return view;
     }
@@ -105,6 +142,13 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    //this is where app should save important info. Call mListener and pass it on.
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -133,10 +177,15 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             //TODO Legg til knapper og funksjonalitet for fragmentet
 
 
-            case R.id.button:
-                addXp();
+            case R.id.next:
+                Log.d(TAG,"Question answered presumably");
+                nextQuestion();
                 break;
 
+            case R.id.Clear:
+                Log.d(TAG,"Clear pressed");
+                clearQuestion();
+                break;
 
           //  default:
             //    throw new RuntimeException("Unknown Button ID");
@@ -144,15 +193,126 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         }
     }
 
-    void addXp() {
-        xp += 100;
-        if(xp > levelUpXpCount){
-            level +=1;
-            levelUpXpCount = level * 1000;
-            mLevelView.setText(String.valueOf(level));
-        }
-        mXpView.setText(String.valueOf(xp));
+
+    //resets the questionare
+    private void clearQuestion() {
+        questionareDone = false;
+        showingAnswer = false;
+        currentQNum = 0;
+        mLevelView.setText("");
+        updateQuestions();
     }
+
+    private void nextQuestion() {
+        //Update answer on current q
+        boolean successful =false;
+        successful = questions[currentQNum].setAnswer(mSpinner.getSelectedItemPosition());
+        Log.d(TAG, "Success?: " + successful);
+        //Question answered successfully?
+        if(successful){
+
+            Log.d(TAG, "Inside successful if");
+            //Are there questions left?
+            if(currentQNum+1 < questions.length){
+                //Go to next question
+                currentQNum++;
+                updateQuestions();
+                Log.d(TAG, "there are questions left num: "+currentQNum + " "+ questions.length);
+
+            }
+            //Finished with questions
+            else{
+                questionareDone = true;
+                Log.d(TAG, "finished with questions" + questionareDone);
+                //TODO: getDayPlan(withAnswers);
+            }
+            updateQuestions();
+
+        }
+        else{
+            Log.d(TAG,"You up shit creek without a paddle, son. Also known as: problems with nextQuestion-method and spinner.selectedItemPos");
+        }
+
+
+    }
+
+    private void updateQuestions() {
+
+        if(questionareDone && !showingAnswer){
+            String newStr = "";
+            for(Question q : questions){
+                String currentStr = (String)mLevelView.getText();
+                String concatStr = q.getAnswer();
+                newStr = currentStr+"\n"+concatStr;
+                mLevelView.setText(newStr);
+
+            }
+
+            Log.d(TAG, newStr);
+
+            mqView.setVisibility(TextView.INVISIBLE);
+            mSpinner.setVisibility(Spinner.INVISIBLE);
+            mLevelView.setVisibility(TextView.VISIBLE);
+            mNext.setVisibility(Button.INVISIBLE);
+
+            showingAnswer = true;
+
+        }
+        else if(!questionareDone){
+            if(showingAnswer){
+                mLevelView.setText("");
+            }
+            currentQ = questions[currentQNum].getQuestion();
+            currentQOpts = questions[currentQNum].getOptions();
+            mqView.setText(currentQ);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, currentQOpts);
+
+            // Getting reference to the Spinner
+
+            // Setting adapter on Spinner to set question options
+            mSpinner.setAdapter(adapter);
+
+            mqView.setVisibility(TextView.VISIBLE);
+            mSpinner.setVisibility(Spinner.VISIBLE);
+            mLevelView.setVisibility(TextView.INVISIBLE);
+            mNext.setVisibility(Button.VISIBLE);
+
+
+            Log.d(TAG,"Qs have been upped. " + currentQ);
+        }
+
+        //toggleVisibility(questionareDone);
+
+
+    }
+
+    //TODO: needs debug for use-cases. THings not visible
+    //Change visibility based on status.
+    //True makes questions visible
+    //False makes invisible
+    private void toggleVisibility(boolean status){
+        if(status){
+            //Change visibility
+            mqView.setVisibility(TextView.VISIBLE);
+            mSpinner.setVisibility(Spinner.VISIBLE);
+            mLevelView.setVisibility(TextView.INVISIBLE);
+
+        }
+        else{
+            //Change visibility
+            mqView.setVisibility(TextView.INVISIBLE);
+            mSpinner.setVisibility(Spinner.INVISIBLE);
+            mLevelView.setVisibility(TextView.VISIBLE);
+
+        }
+
+
+    }
+
+
+
+
 
     /**
      * This interface must be implemented by activities that contain this

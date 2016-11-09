@@ -29,8 +29,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
-import mordbad.master.dss.Gatherer;
+import mordbad.master.data.Gatherer;
 import mordbad.master.dss.Reasoner;
+import mordbad.master.dss.Wish;
 
 public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
     String[] activites = {"Arts & Culture", "Business", "Community", "Education",};
-    private Location mLastLocation;
+    private Location mLastLocation = new Location("Turn on your gps");
 
     //TODO change to more accurate type. Ref onConnected() for details
     private TextView mLatitudeText;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             tourFragment = new TourFragment();
             mapFragment = new MapFragment();
             prefFragment = new PreferenceFragment();
-
+            gatherer.setup(mapFragment);
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             // firstFragment.setArguments(getIntent().getExtras());
@@ -251,11 +252,36 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     @Override
-    public String getPlaces() {
-        //mGoogleApiClient.PlaceDetectionApi.getCurrentPlace();
+    public void getPlaces(String s) {
+        gatherer.getPlaces(s);
 
 
-        return null;
+    }
+
+
+
+    @Override
+    public void placeDetails(String s) {
+        gatherer.placeDetails(s);
+    }
+
+
+
+    //Change to TourFragment from Mapfragment by way of clicking marker and present details about a place
+    @Override
+    public void presentDetails(String result) {
+
+
+
+        if(tourFragment != null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, tourFragment)
+                    .commit();
+
+        }
+        tourFragment.presentDetails(result);
+
+
     }
 
     @Override
@@ -343,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                 break;
 
             case 4:
-                prefFragment.addXp();
+
                 break;
 
             default:

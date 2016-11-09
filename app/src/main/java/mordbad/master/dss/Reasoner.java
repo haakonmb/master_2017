@@ -1,7 +1,6 @@
 package mordbad.master.dss;
 
-import mordbad.master.Wish;
-import mordbad.master.dss.Gatherer;
+import mordbad.master.data.Gatherer;
 
 /**
  * Created by haakon on 12/05/16.

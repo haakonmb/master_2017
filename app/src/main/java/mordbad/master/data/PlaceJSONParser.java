@@ -1,4 +1,4 @@
-package mordbad.master;
+package mordbad.master.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +54,9 @@ public class PlaceJSONParser {
         String vicinity="-NA-";
         String latitude="";
         String longitude="";
+        String id ="";
+        String icon ="";
+        String place_id="";
 
         try {
             // Extracting Place name, if available
@@ -66,6 +69,25 @@ public class PlaceJSONParser {
                 vicinity = jPlace.getString("vicinity");
             }
 
+            if(!jPlace.isNull("icon")){
+                icon = jPlace.getString("icon");
+
+
+            }
+            if(!jPlace.isNull("id")){
+                id = jPlace.getString("id");
+
+
+            }
+
+            if(!jPlace.isNull("place_id")){
+                place_id = jPlace.getString("place_id");
+
+
+            }
+
+
+
             latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
 
@@ -73,6 +95,12 @@ public class PlaceJSONParser {
             place.put("vicinity", vicinity);
             place.put("lat", latitude);
             place.put("lng", longitude);
+            place.put("id",id);
+
+
+            place.put("place_id",place_id);
+            place.put("icon",icon);
+
 
         } catch (JSONException e) {
             e.printStackTrace();

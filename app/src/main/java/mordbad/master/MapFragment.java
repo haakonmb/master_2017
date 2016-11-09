@@ -2,10 +2,8 @@ package mordbad.master;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,25 +20,18 @@ import android.widget.Spinner;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+
+import mordbad.master.data.PlaceJSONParser;
 
 
 /**
@@ -80,6 +71,8 @@ public class MapFragment extends android.support.v4.app.Fragment {
     double mLongitude = 0;
 
     Button btnFind = null;
+
+    HashMap<Marker, String> markerID;
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -207,11 +200,26 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
                 Log.d(TAG, ""+sb.toString());
                 // Creating a new non-ui thread task to download json data
-                PlacesTask placesTask = new PlacesTask();
 
-                // Invokes the "doInBackground()" method of the class PlaceTask
-                placesTask.execute(sb.toString());
+                mListener.getPlaces(sb.toString());
+//                PlacesTask placesTask = new PlacesTask();
+//
+//                // Invokes the "doInBackground()" method of the class PlaceTask
+//                placesTask.execute(sb.toString());
 
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Log.d(TAG, "mark: " + markerID.get(marker));
+
+//                String infoget = "https://maps.googleapis.com/maps/api/place/details/json?placeid="+markerID.get(marker)+"&key=AIzaSyBDJ5xrcLftFy_VC0ZoRc2j2Jn-oTLPXvc";
+//
+//                PlacesDetails placesDetails= new PlacesDetails();
+//                placesDetails.execute(infoget);
+                mListener.placeDetails(markerID.get(marker));
             }
         });
 
@@ -320,6 +328,18 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
     }
 
+
+    public void setPlaces(String result){
+        ParserTask pt= new ParserTask();
+
+        pt.execute(result);
+        Log.d(TAG, "Got called by gatherer");
+    }
+
+    public void presentDetails(String result) {
+        mListener.presentDetails(result);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -337,82 +357,14 @@ public class MapFragment extends android.support.v4.app.Fragment {
         //TODO add requestlocation-method for getting location from mainCativity
         public Location getLocation();
 
-        public String getPlaces();
+        public void getPlaces(String s);
+
+        void placeDetails(String s);
+
+        void presentDetails(String result);
     }
 
-    /** A method to download json data from url */
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try{
-            URL url = new URL(strUrl);
-
-            // Creating an http connection to communicate with url
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            // Connecting to url
-            urlConnection.connect();
-
-            // Reading data from url
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuffer sb  = new StringBuffer();
-
-            String line = "";
-            while( ( line = br.readLine())  != null){
-                sb.append(line);
-                Log.d(TAG,"dURL "+line);
-            }
-
-            data = sb.toString();
-
-            br.close();
-
-        }catch(Exception e){
-            Log.d(TAG, "Exception while downloading url " +e.toString());
-        }finally{
-            iStream.close();
-            urlConnection.disconnect();
-        }
-
-        return data;
-    }
-
-    /**
-     * A class, to download Google Places
-     */
-    private class PlacesTask extends AsyncTask<String, Integer, String> {
-
-        String data = null;
-
-        // Invoked by execute() method of this object
-        @Override
-        protected String doInBackground(String... url) {
-            try {
-                data = downloadUrl(url[0]);
-
-               // data = mListener.getPlaces();
-            } catch (Exception e) {
-                Log.d("Background Task", e.toString());
-            }
-            return data;
-        }
-
-        // Executed after the complete execution of doInBackground() method
-        @Override
-        protected void onPostExecute(String result) {
-            ParserTask parserTask = new ParserTask();
-
-            // Start parsing the Google places in JSON format
-            // Invokes the "doInBackground()" method of the class ParseTask
-            parserTask.execute(result);
-        }
-
-    }
-
+    //TODO: move to just using JSONObject as hashmap directly instead of needlessly making one yourself.
     /** A class to parse the Google Places in JSON format */
     private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
 
@@ -443,6 +395,7 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
             // Clears all the existing markers
             mMap.clear();
+            markerID = new HashMap<Marker, String>();
 
             for(int i=0;i<list.size();i++){
 
@@ -463,8 +416,24 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
                 // Getting vicinity
                 String vicinity = hmPlace.get("vicinity");
+//                String icon = hmPlace.get("icon");
+//                try{
+//
+//                    URL url = new URL(icon);
+//                    Bitmap image = BitmapFactory.decodeStream(url.openStream());
+//                    BitmapDescriptor bmd = BitmapDescriptorFactory.fromBitmap(image);
+//                    markerOptions.icon(bmd);
+//                }
+//                catch (Exception e){
+//                    Log.d(TAG, ""+e);
+//                }
+//
+//                Log.d(TAG,""+icon);
 
                 LatLng latLng = new LatLng(lat, lng);
+
+                markerOptions.snippet("test");
+                //markerOptions.icon(icon);
 
                 // Setting the position for the marker
                 markerOptions.position(latLng);
@@ -474,7 +443,9 @@ public class MapFragment extends android.support.v4.app.Fragment {
                 markerOptions.title(name + " : " + vicinity);
 
                 // Placing a marker on the touched position
-                mMap.addMarker(markerOptions);
+                Marker mark = mMap.addMarker(markerOptions);
+                markerID.put(mark, hmPlace.get("place_id"));
+
             }
         }
     }
