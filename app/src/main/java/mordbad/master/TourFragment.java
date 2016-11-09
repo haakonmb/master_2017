@@ -4,15 +4,20 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import mordbad.master.dss.Reasoner;
 
 
 /**
@@ -23,7 +28,7 @@ import org.json.JSONObject;
  * Use the {@link TourFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TourFragment extends android.support.v4.app.Fragment {
+public class TourFragment extends android.support.v4.app.Fragment implements Button.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,6 +40,8 @@ public class TourFragment extends android.support.v4.app.Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Reasoner mReasoner;
     JSONObject results = null;
 
     TextView nameView;
@@ -44,6 +51,18 @@ public class TourFragment extends android.support.v4.app.Fragment {
     TextView openTimeView;
     TextView websiteView;
     TextView typesView;
+
+    Button mButton;
+
+    Spinner one;
+    Spinner two;
+    Spinner three;
+    Spinner four;
+    Spinner five;
+    Spinner six;
+
+    Spinner[] content;
+
 
     String placeDetails = "";
 
@@ -103,6 +122,53 @@ public class TourFragment extends android.support.v4.app.Fragment {
         websiteView = (TextView) view.findViewById(R.id.textView5);
         typesView = (TextView) view.findViewById(R.id.textView6);
 
+        // Getting reference to the Spinner
+        one = (Spinner) view.findViewById(R.id.spinner);
+        two = (Spinner) view.findViewById(R.id.spinner2);
+        three = (Spinner) view.findViewById(R.id.spinner3);
+        four= (Spinner) view.findViewById(R.id.spinner4);
+        five = (Spinner) view.findViewById(R.id.spinner5);
+        six = (Spinner) view.findViewById(R.id.spinner6);
+
+        mButton = (Button) view.findViewById(R.id.button);
+        mButton.setOnClickListener( this);
+
+
+        Integer[] generations = {50,80,100,200,400,500,1000};
+
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getContext(), android.R.layout.simple_spinner_dropdown_item, generations);
+
+
+        one.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.d(TAG, "Spinner clicked");
+
+
+                one.setSelection(position);
+                Log.d(TAG, "spinnerPos: " + one.getSelectedItemPosition());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.d(TAG, "Spinner nothing selected");
+            }
+        });
+        one.setAdapter(adapter);
+
+        String[] allPlaceTypes = getResources().getStringArray(R.array.all_place_types);
+
+        content = new Spinner[] {two, three, four, five, six};
+
+
+        // Setting adapter on Spinner to set question options
+        spinnerSetClickAndContent(content,allPlaceTypes);
+
+        mReasoner = new Reasoner(allPlaceTypes);
 
         populate();
 
@@ -113,6 +179,35 @@ public class TourFragment extends android.support.v4.app.Fragment {
 //        nameView.setMovementMethod(new ScrollingMovementMethod());
 
         return view;
+    }
+
+    private void spinnerSetClickAndContent(Spinner[] spinners, String[] contents) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, contents);
+
+        for(final Spinner s: spinners){
+            s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int position, long id) {
+                    Log.d(TAG, "Spinner clicked");
+
+
+                    s.setSelection(position);
+                    Log.d(TAG, "spinnerPos: " + s.getSelectedItemPosition());
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    Log.d(TAG, "Spinner nothing selected");
+                }
+            });
+
+            s.setAdapter(adapter);
+        }
+
+
     }
 
     private void populate() {
@@ -220,9 +315,45 @@ public class TourFragment extends android.support.v4.app.Fragment {
     }
 
 
+    @Override
+    public void onClick(View v){
+
+        switch(v.getId()){
+            case R.id.button:
+                printResult();
+                break;
 
 
 
+
+
+
+        }
+
+
+    }
+
+    private void printResult() {
+//        String result;
+        int gen = (int) one.getSelectedItem();
+
+        Log.d(TAG, "gen :" + gen );
+        int[] result = mReasoner.getResult(gen);
+//        result = mReasoner.getResult(gen);
+
+        StringBuilder build = new StringBuilder();
+
+        for(int count =0; count < result.length; count ++){
+            build.append(result[count]+ ", ");
+            content[count].setSelection(result[count]);
+
+
+        }
+
+        String numbers = build.toString();
+        Log.d(TAG,""+numbers);
+        nameView.setText(numbers);
+    }
 
 
     /**

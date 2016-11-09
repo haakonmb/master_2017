@@ -10,6 +10,7 @@ public class Question {
     String[] option;
     String answer ="N/A";
     int optionNum = -1;
+    int[] tags;
 
 
 
