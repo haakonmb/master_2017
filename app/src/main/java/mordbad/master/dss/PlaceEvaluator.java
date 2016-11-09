@@ -9,11 +9,12 @@ import java.util.List;
  * Created by haakon on 20/10/16.
  */
 
-public class PlaceEvaluator implements FitnessEvaluator<int[]> {
+    public class PlaceEvaluator implements FitnessEvaluator<int[]> {
 
 
     private int length = 90;
     private HashMap<Integer,Integer> weights;
+
 
 
     public PlaceEvaluator(int length){
@@ -46,4 +47,17 @@ public class PlaceEvaluator implements FitnessEvaluator<int[]> {
     public boolean isNatural() {
         return false;
     }
+
+
+    private double individualScore(){
+
+       return 0;
+    }
+
+    private double constraintScore(){
+
+        return 0;
+    }
+
+
 }
