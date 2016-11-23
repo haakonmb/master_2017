@@ -33,7 +33,7 @@ import mordbad.master.data.Gatherer;
 import mordbad.master.dss.Reasoner;
 import mordbad.master.dss.Wish;
 
-public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener,Gatherer.OnGathererInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     String TAG = "mainactivity";
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         permissionCoarse = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        Log.d(TAG,""+permissionFine);
+        Log.d(TAG,"finePermission == "+permissionFine);
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -122,7 +122,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             tourFragment = new TourFragment();
             mapFragment = new MapFragment();
             prefFragment = new PreferenceFragment();
-            gatherer.setup(mapFragment);
+            //gir gatherer callback-mulighet
+            gatherer.setup(this);
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             // firstFragment.setArguments(getIntent().getExtras());
@@ -246,6 +247,11 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     @Override
+    public void gathererTest() {
+        gatherer.gather();
+    }
+
+    @Override
     public Location getLocation() {
         mapFragment.SetLocation(mLastLocation);
         return mLastLocation;
@@ -337,6 +343,11 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void finished(String result) {
+        Log.d(TAG, "Ive been callbacked");
     }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {

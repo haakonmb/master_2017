@@ -1,6 +1,7 @@
 package mordbad.master.data;
 
 
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import android.util.Log;
@@ -25,9 +26,12 @@ public class Gatherer {
 
     String TAG = "GATHERER";
     String result;
-
+    String[] allPlaceTypes;
 
     MapFragment mapFragment;
+
+
+    private OnGathererInteractionListener mListener;
     private String api_key = "AIzaSyBDJ5xrcLftFy_VC0ZoRc2j2Jn-oTLPXvc";
 
     Boolean places= true;
@@ -35,8 +39,12 @@ public class Gatherer {
 
 
 
-    public Gatherer(){};
+    public Gatherer(){}
 
+
+    public Gatherer(String[] placeTypes){
+
+    }
 
     //TODO Interface with APIs and get data. Save it locally for a limited time.
     public String[] getEvents(Wish wish) {
@@ -49,11 +57,20 @@ public class Gatherer {
 
     //This should combine the database and web-interface and supply information to the Reasoner
 
-    public void setup(MapFragment fragment){
-       // this.result = result;
-        mapFragment = fragment;
-//        mapFragment.setPlaces("test");
+    public void setup(Activity activity){
+        try {
+            mListener = (OnGathererInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
+
+    public void gather(){
+        mListener.finished("This was a great success");
+
+    }
+
 
 
     /** A method to download json data from url */
@@ -78,6 +95,7 @@ public class Gatherer {
             StringBuffer sb  = new StringBuffer();
 
             String line = "";
+            //TODO: fix hack
             while( ( line = br.readLine())  != null){
                 sb.append(line);
                 Log.d(TAG, "dURL " + line);
@@ -161,6 +179,8 @@ public class Gatherer {
     }
 
 
-
+    public interface OnGathererInteractionListener {
+        public void finished(String result);
+    }
 }
 
