@@ -180,6 +180,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             case R.id.next:
                 Log.d(TAG,"Question answered presumably");
                 nextQuestion();
+                mListener.gathererTest();
                 break;
 
             case R.id.Clear:
@@ -328,6 +329,8 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
 
+
+        public void gathererTest();
         //public void addXp();
         public void passPreference(Wish wish );
     }

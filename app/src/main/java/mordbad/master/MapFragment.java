@@ -200,7 +200,6 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
                 Log.d(TAG, ""+sb.toString());
                 // Creating a new non-ui thread task to download json data
-
                 mListener.getPlaces(sb.toString());
 //                PlacesTask placesTask = new PlacesTask();
 //

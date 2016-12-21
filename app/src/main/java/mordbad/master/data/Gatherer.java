@@ -2,6 +2,8 @@ package mordbad.master.data;
 
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.location.Location;
 import android.os.AsyncTask;
 
 import android.util.Log;
@@ -41,9 +43,11 @@ public class Gatherer {
 
     public Gatherer(){}
 
-
+    //Takes as input the canonical arry of place-types.
     public Gatherer(String[] placeTypes){
+        this.allPlaceTypes = placeTypes;
 
+//        Fragment.getResources().
     }
 
     //TODO Interface with APIs and get data. Save it locally for a limited time.
@@ -71,7 +75,17 @@ public class Gatherer {
 
     }
 
+    public String contructUrl(String type, Location location, String api_key){
 
+        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        sb.append("location=" + location.getLatitude() + "," + location.getLongitude());
+        sb.append("&radius=5000");
+        sb.append("&types=" + type);
+        sb.append("&sensor=true");
+        sb.append("&key="+ api_key);
+        
+        return sb.toString();
+    }
 
     /** A method to download json data from url */
     private String downloadUrl(String strUrl) throws IOException {
