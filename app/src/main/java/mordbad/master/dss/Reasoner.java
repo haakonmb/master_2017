@@ -30,7 +30,7 @@ public class Reasoner {
     private Wish wish = null;
     private PlaceEvaluator pe;
     private MersenneTwisterRNG mRng;
-    EvolutionEngine<int[]> engine;
+    private EvolutionEngine<int[]> engine;
     private String[] candidates;
     private int length = 90;
 
@@ -105,10 +105,33 @@ public class Reasoner {
                 rng);
     }
 
-    public int[] getResult(int population){
+
+    /**
+     * Gets the categories of activities we recommend.
+     *
+     * @param population
+     * @return
+     */
+    public int[] getCategories(int population){
         int[] candidate = engine.evolve(population,0, new ElapsedTime(5000));
 
         return candidate;
+    }
+
+
+    /**
+     * Gets the concrete activities we recommend using the activity-types from getCategories()
+     *
+     * @param population The size of the population for each generation.
+     * @param activities The set of ints getCategories generated from type-array defined in strings.xml.
+     * @return concrete candidate activities we recommend to the user.
+     */
+    //TODO: Design, change signature and implement
+    public int[] getActivities(int population,int[] activities){
+       int[] candidate = {0,1} ;
+
+
+     return candidate;
     }
 
     public String[] getEvents(Wish wish){

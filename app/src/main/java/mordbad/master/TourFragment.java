@@ -338,8 +338,8 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         int gen = (int) one.getSelectedItem();
 
         Log.d(TAG, "gen :" + gen );
-        int[] result = mReasoner.getResult(gen);
-//        result = mReasoner.getResult(gen);
+        int[] result = mReasoner.getCategories(gen);
+//        result = mReasoner.getCategories(gen);
 
         StringBuilder build = new StringBuilder();
 
