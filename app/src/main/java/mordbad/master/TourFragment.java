@@ -338,6 +338,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         int gen = (int) one.getSelectedItem();
 
         Log.d(TAG, "gen :" + gen );
+        //TODO: move getCategories out of the print-function and into its own method for clarity of functionality.
         int[] result = mReasoner.getCategories(gen);
 //        result = mReasoner.getCategories(gen);
 
