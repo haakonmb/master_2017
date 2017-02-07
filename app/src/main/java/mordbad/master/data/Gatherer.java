@@ -8,13 +8,22 @@ import android.os.AsyncTask;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.reactivestreams.Subscriber;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.functions.Function;
 import mordbad.master.MapFragment;
 import mordbad.master.dss.Wish;
 
@@ -31,7 +40,7 @@ public class Gatherer {
     String[] allPlaceTypes;
 
     MapFragment mapFragment;
-
+    PlaceJSONParser placeJSONParser = new PlaceJSONParser();
 
     private OnGathererInteractionListener mListener;
     private String api_key = "AIzaSyBDJ5xrcLftFy_VC0ZoRc2j2Jn-oTLPXvc";
@@ -58,7 +67,30 @@ public class Gatherer {
 
     }
 
+    public Observable getObservable(String s){
+        Observable<String> observable = Observable.just(handleDownload(s)).map(new Function<String, String>() {
+            @Override
+            public String apply(String s) throws Exception {
+                return placeJSONParser.parse(s);
+            }
+        });
+//
 
+        return observable;
+    }
+
+
+    private String handleDownload(String s){
+        String data = "";
+        try{
+            data = downloadUrl(s);
+
+        }
+        catch (IOException e){
+            Log.d(TAG, e.toString());
+        }
+        return data;
+    }
     //This should combine the database and web-interface and supply information to the Reasoner
 
     public void setup(Activity activity){
@@ -88,7 +120,7 @@ public class Gatherer {
     }
 
     /** A method to download json data from url */
-    private String downloadUrl(String strUrl) throws IOException {
+    private String downloadUrl(String strUrl) throws IOException{
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -109,7 +141,7 @@ public class Gatherer {
             StringBuffer sb  = new StringBuffer();
 
             String line = "";
-            //TODO: fix hack
+            //TODO: fix hack / mem-leak
             while( ( line = br.readLine())  != null){
                 sb.append(line);
                 Log.d(TAG, "dURL " + line);
@@ -151,6 +183,16 @@ public class Gatherer {
 
 
 
+    }
+
+    public List<HashMap<String,String>> parsePlaces(String result) {
+
+        List<HashMap<String,String>> list = null;
+//        ParserTask derp = new ParserTask();
+//        derp.execute(result);
+
+
+        return list;
     }
 
     /**

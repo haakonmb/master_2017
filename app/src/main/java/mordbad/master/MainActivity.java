@@ -29,6 +29,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import java.util.HashMap;
+import java.util.List;
+
 import mordbad.master.data.Gatherer;
 import mordbad.master.dss.Reasoner;
 import mordbad.master.dss.Wish;
@@ -288,6 +291,11 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         tourFragment.presentDetails(result);
 
 
+    }
+
+    @Override
+    public List<HashMap<String, String>> parsePlaces(String result) {
+        return gatherer.parsePlaces(result);
     }
 
     @Override

@@ -17,6 +17,9 @@ import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 import java.util.HashMap;
 import java.util.Random;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.functions.Action;
 import mordbad.master.data.Gatherer;
 
 
@@ -35,10 +38,10 @@ public class Reasoner {
     private int length = 90;
 
 
-    public Reasoner(){};
+    public Reasoner(){}
 
 
-
+//Observable
 
     public Reasoner(String[] candidates){
         /*
