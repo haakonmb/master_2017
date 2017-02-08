@@ -2,14 +2,12 @@ package mordbad.master.data;
 
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.location.Location;
 import android.os.AsyncTask;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.reactivestreams.Subscriber;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,11 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.functions.Function;
 import mordbad.master.MapFragment;
 import mordbad.master.dss.Wish;
 
@@ -68,19 +63,18 @@ public class Gatherer {
     }
 
     public Observable getObservable(String s){
-        Observable<String> observable = Observable.just(handleDownload(s)).map(new Function<String, String>() {
-            @Override
-            public String apply(String s) throws Exception {
-                return placeJSONParser.parse(s);
-            }
+        Observable<List<HashMap<String,String>>> observable = Observable.just(exceptionHandlerForDownloadUrl(s)).map(s1 -> {
+            JSONObject jsonObject = new JSONObject(s1);
+
+            return placeJSONParser.parse(jsonObject);
         });
-//
+
 
         return observable;
     }
 
 
-    private String handleDownload(String s){
+    private String exceptionHandlerForDownloadUrl(String s){
         String data = "";
         try{
             data = downloadUrl(s);
@@ -107,7 +101,7 @@ public class Gatherer {
 
     }
 
-    public String contructUrl(String type, Location location, String api_key){
+    public String contructUrl(String type, Location location){
 
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         sb.append("location=" + location.getLatitude() + "," + location.getLongitude());
