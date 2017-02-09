@@ -47,12 +47,12 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
     //private Reasoner reasoner;
-    private String[] events = null;
+    private String[] events ;
     private Wish wish;
 
     //Init Decision support system parts
-    private Gatherer gatherer = null;
-    private Reasoner reasoner = null;
+    private Gatherer gatherer;
+    private Reasoner reasoner;
 
 
     //fragments ohoy!
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     MapFragment mapFragment;
 
     //apiclient for location services
-    GoogleApiClient mGoogleApiClient = null;
+    GoogleApiClient mGoogleApiClient ;
 
 
     String[] activites = {"Arts & Culture", "Business", "Community", "Education",};

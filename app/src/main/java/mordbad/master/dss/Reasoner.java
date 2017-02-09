@@ -2,6 +2,8 @@ package mordbad.master.dss;
 
 
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
 import org.uncommons.watchmaker.framework.EvolutionaryOperator;
 import org.uncommons.watchmaker.framework.FitnessEvaluator;
@@ -12,15 +14,20 @@ import org.uncommons.watchmaker.framework.selection.RouletteWheelSelection;
 import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 
-//import mordbad.master.R;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
+import mordbad.master.R;
 import mordbad.master.data.Gatherer;
+import android.Manifest;
+import android.location.Location;
+import android.support.v7.app.AppCompatActivity;
 
 
 /**
@@ -30,15 +37,19 @@ public class Reasoner {
 
     private String result = "";
     private Gatherer gatherer = new Gatherer();
-    private Wish wish = null;
+    private Wish wish ;
     private PlaceEvaluator pe;
     private MersenneTwisterRNG mRng;
     private EvolutionEngine<int[]> engine;
     private String[] candidates;
     private int length = 90;
+    private Observable<List<HashMap<String,String>>> activityObservable;
 
 
-    public Reasoner(){}
+    public Reasoner(){
+//        getContext().getResources().getStringArray(R.array.all_place_types);
+
+    }
 
 
 //Observable
@@ -54,6 +65,7 @@ public class Reasoner {
      */
         this.candidates = candidates;
         length = candidates.length;
+//        activityObservable = gatherer.getObservable()
 
         PlaceFactory factory = new PlaceFactory<int[]>(length);
 //      Create a pieline that apllies cross-over mutation
@@ -130,8 +142,37 @@ public class Reasoner {
      * @return concrete candidate activities we recommend to the user.
      */
     //TODO: Design, change signature and implement
-    public int[] getActivities(int population,int[] activities){
+    public int[] getActivities(int population,int[] activities,Location location){
+        //PLACEHOLDER
        int[] candidate = {0,1} ;
+
+        Observable<List<HashMap<String,String>>> observable;
+        for(int i: activities){
+            observable = gatherer.getObservable(gatherer.contructUrl(this.candidates[i],location));
+            observable.subscribe(new Observer<List<HashMap<String,String>>>() {
+
+                @Override
+                public void onSubscribe(Disposable d) {
+                    
+                }
+
+                @Override
+                public void onNext(List<HashMap<String, String>> hashMaps) {
+
+                }
+
+                @Override
+                public void onError(Throwable t) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+
+        }
 
 
      return candidate;
