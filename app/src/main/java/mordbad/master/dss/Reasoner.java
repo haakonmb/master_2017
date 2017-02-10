@@ -50,6 +50,9 @@ public class Reasoner {
     private Observable<List<HashMap<String,String>>> activityObservable;
     private boolean allFinished = false;
 
+    public Observable<ArrayList<List<HashMap<String,String>>>> allResults;
+    private Observer subscriber;
+
     public Reasoner(){
 //        getContext().getResources().getStringArray(R.array.all_place_types);
 
@@ -146,7 +149,7 @@ public class Reasoner {
      * @return concrete candidate activities we recommend to the user.
      */
     //TODO: Design, change signature and implement
-    public int[] getActivities(int population,int[] activities,Location location){
+    public int[] getActivities(int population, int[] activities, Location location){
         //PLACEHOLDER
        int[] candidate = {0,1} ;
         ArrayList<List<HashMap<String,String>>> allofit =new ArrayList<>();
@@ -182,6 +185,8 @@ public class Reasoner {
                         //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
                         //generateDay();
                         Log.d(TAG,"All done");
+                        allResults = Observable.just(allofit);
+                        allResults.subscribe(subscriber);
 
                     }
                 }
@@ -190,7 +195,7 @@ public class Reasoner {
         }
 
 
-     return candidate;
+        return candidate;
     }
 
     private int[] generateDay() {
@@ -231,4 +236,7 @@ public class Reasoner {
     }
 
 
+    public void setSubscriber(Observer subscriber) {
+        this.subscriber = subscriber;
+    }
 }

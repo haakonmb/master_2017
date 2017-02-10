@@ -36,7 +36,7 @@ import mordbad.master.data.Gatherer;
 import mordbad.master.dss.Reasoner;
 import mordbad.master.dss.Wish;
 
-public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener,Gatherer.OnGathererInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener,Gatherer.OnGathererInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, DayFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     String TAG = "mainactivity";
 
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     PreferenceFragment prefFragment;
     TourFragment tourFragment;
     MapFragment mapFragment;
+    DayFragment dayFragment;
 
     //apiclient for location services
     GoogleApiClient mGoogleApiClient ;
@@ -125,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             tourFragment = new TourFragment();
             mapFragment = new MapFragment();
             prefFragment = new PreferenceFragment();
+            dayFragment = new DayFragment();
+
             //gir gatherer callback-mulighet
             gatherer.setup(this);
             // In case this activity was started with special instructions from an
@@ -247,6 +250,11 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void setResultForDayFragment(int[] result) {
+        dayFragment.setResult(result);
     }
 
     @Override
@@ -387,8 +395,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                 mapFragment.SetLocation(mLastLocation);
                 break;
 
-            case 4:
-
+            case 3:
+                fragment = dayFragment;
                 break;
 
             default:

@@ -109,7 +109,8 @@ public class Gatherer {
         sb.append("&types=" + type);
         sb.append("&sensor=true");
         sb.append("&key="+ api_key);
-        
+
+        Log.d(TAG,sb.toString());
         return sb.toString();
     }
 

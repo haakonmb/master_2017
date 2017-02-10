@@ -321,6 +321,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         switch(v.getId()){
             case R.id.button:
                 printResult();
+//                setResult();
                 break;
 
 
@@ -354,6 +355,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         String numbers = build.toString();
         Log.d(TAG,""+numbers);
         nameView.setText(numbers);
+        mListener.setResultForDayFragment(result);
     }
 
 
@@ -370,6 +372,8 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
+        void setResultForDayFragment(int[] result);
     }
 
 }
