@@ -15,6 +15,8 @@ import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +30,7 @@ import mordbad.master.data.Gatherer;
 import android.Manifest;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 
 /**
@@ -35,6 +38,7 @@ import android.support.v7.app.AppCompatActivity;
  */
 public class Reasoner {
 
+    private static final String TAG = "REASONER";
     private String result = "";
     private Gatherer gatherer = new Gatherer();
     private Wish wish ;
@@ -44,7 +48,7 @@ public class Reasoner {
     private String[] candidates;
     private int length = 90;
     private Observable<List<HashMap<String,String>>> activityObservable;
-
+    private boolean allFinished = false;
 
     public Reasoner(){
 //        getContext().getResources().getStringArray(R.array.all_place_types);
@@ -145,6 +149,9 @@ public class Reasoner {
     public int[] getActivities(int population,int[] activities,Location location){
         //PLACEHOLDER
        int[] candidate = {0,1} ;
+        ArrayList<List<HashMap<String,String>>> allofit =new ArrayList<>();
+        boolean[] finished = new boolean[activities.length];
+        allFinished = false;
 
         Observable<List<HashMap<String,String>>> observable;
         for(int i: activities){
@@ -158,8 +165,11 @@ public class Reasoner {
 
                 @Override
                 public void onNext(List<HashMap<String, String>> hashMaps) {
-
+                    allofit.set(i, hashMaps);
+                    finished[i] = true;
+                    checkAllFinished(finished);
                 }
+
 
                 @Override
                 public void onError(Throwable t) {
@@ -168,7 +178,12 @@ public class Reasoner {
 
                 @Override
                 public void onComplete() {
+                    if(allFinished){
+                        //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
+                        //generateDay();
+                        Log.d(TAG,"All done");
 
+                    }
                 }
             });
 
@@ -176,6 +191,24 @@ public class Reasoner {
 
 
      return candidate;
+    }
+
+    private int[] generateDay() {
+        int[] candidates = {0,1};
+
+        return candidates;
+    }
+
+
+    //Checks if this was the last one, if so flips allFinished to signal method-call in onComplete
+    private void checkAllFinished(boolean[] finished) {
+        boolean everyone = true;
+        for(boolean i: finished){
+            if(!i){
+                everyone = false;
+            }
+        }
+        allFinished = everyone;
     }
 
     public String[] getEvents(Wish wish){
