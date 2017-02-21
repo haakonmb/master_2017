@@ -69,7 +69,7 @@ public class Gatherer {
                 //Wait until subscription to do stuff
                 Observable.defer(
                 //Do this
-                () -> Observable.just(exceptionHandlerForDownloadUrl(s))
+                () -> Observable.just(exceptionHandlerForDownloadUrl(s)))
                 //Do it on this thread
                 .subscribeOn(Schedulers.io())
                 // Be notified on the main thread
@@ -79,7 +79,7 @@ public class Gatherer {
             JSONObject jsonObject = new JSONObject(s1);
 
             return placeJSONParser.parse(jsonObject);
-        }));
+        });
 
 
         return observable;
