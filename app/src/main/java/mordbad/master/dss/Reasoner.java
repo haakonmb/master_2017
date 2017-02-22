@@ -158,9 +158,11 @@ public class Reasoner {
         Log.d(TAG, ""+activities.length);
 
         Observable<List<HashMap<String,String>>> observable;
-        for(int i: activities){
+        for(int i =0; i<activities.length; i++){
             //TODO: int i gir deg ikke posisjonen i activities men verdien i activites. Dette må fikses på, slik at posisjonen i ArrayListen stemmer med designet.
-            observable = gatherer.getObservable(gatherer.contructUrl(this.candidates[i],location));
+            observable = gatherer.getObservable(gatherer.contructUrl(this.candidates[activities[i]],location));
+
+            final int ii = i;
             observable.subscribe(new Observer<List<HashMap<String,String>>>() {
 
                 @Override
@@ -170,9 +172,10 @@ public class Reasoner {
 
                 @Override
                 public void onNext(List<HashMap<String, String>> hashMaps) {
-                    Log.d(TAG, "Allofitsize: "+ allofit.size() + " iterator nr:" + i);
-                    allofit.add(i, hashMaps);
-                    finished[i] = true;
+                    Log.d(TAG, "Allofitsize: "+ allofit.size() + " iterator nr:" + ii);
+                    allofit.ensureCapacity(ii);
+                    allofit.add(ii, hashMaps);
+                    finished[ii] = true;
                     checkAllFinished(finished);
                 }
 
