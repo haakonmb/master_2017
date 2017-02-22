@@ -145,19 +145,21 @@ public class Reasoner {
      * Gets the concrete activities we recommend using the activity-types from getCategories()
      *
      * @param population The size of the population for each generation.
-     * @param activities The set of ints getCategories generated from type-array defined in strings.xml.
+     * @param activities The set of ints getCategories generated from type-array defined in strings.xml. In the design-spec this should be an int[] of five elements, because we are looking for five places.
      * @return concrete candidate activities we recommend to the user.
      */
     //TODO: Design, change signature and implement
     public int[] getActivities(int population, int[] activities, Location location){
         //PLACEHOLDER
        int[] candidate = {0,1} ;
-        ArrayList<List<HashMap<String,String>>> allofit =new ArrayList<>();
+        ArrayList<List<HashMap<String,String>>> allofit =new ArrayList<>(activities.length);
         boolean[] finished = new boolean[activities.length];
         allFinished = false;
+        Log.d(TAG, ""+activities.length);
 
         Observable<List<HashMap<String,String>>> observable;
         for(int i: activities){
+            //TODO: int i gir deg ikke posisjonen i activities men verdien i activites. Dette må fikses på, slik at posisjonen i ArrayListen stemmer med designet.
             observable = gatherer.getObservable(gatherer.contructUrl(this.candidates[i],location));
             observable.subscribe(new Observer<List<HashMap<String,String>>>() {
 
@@ -168,7 +170,8 @@ public class Reasoner {
 
                 @Override
                 public void onNext(List<HashMap<String, String>> hashMaps) {
-                    allofit.set(i, hashMaps);
+                    Log.d(TAG, "Allofitsize: "+ allofit.size() + " iterator nr:" + i);
+                    allofit.add(i, hashMaps);
                     finished[i] = true;
                     checkAllFinished(finished);
                 }
@@ -176,7 +179,7 @@ public class Reasoner {
 
                 @Override
                 public void onError(Throwable t) {
-
+                    Log.d(TAG, ":"+t );
                 }
 
                 @Override
