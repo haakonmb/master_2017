@@ -48,7 +48,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
     private Button button;
 
 
-    private int[] activities =  {1,1,1,1,1};
+    private int[] activities =  {13,13,13,13,13};
     private ArrayList<List<HashMap<String,String>>> result;
     private Reasoner reasoner;
     private TextView view1;
@@ -129,6 +129,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
             }
         };
 
+        //Instantiate the reasoner and give it access to the canonical array of place types so that the fragment and the reasoner are sure to talk about the same kinds of places
         reasoner = new Reasoner(getResources().getStringArray(R.array.all_place_types));
 
         return view;
