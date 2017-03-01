@@ -4,12 +4,18 @@ package mordbad.master.dss;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+import org.uncommons.watchmaker.framework.EvaluatedCandidate;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
+import org.uncommons.watchmaker.framework.EvolutionObserver;
 import org.uncommons.watchmaker.framework.EvolutionaryOperator;
 import org.uncommons.watchmaker.framework.FitnessEvaluator;
 import org.uncommons.watchmaker.framework.GenerationalEvolutionEngine;
 import org.uncommons.watchmaker.framework.SelectionStrategy;
+import org.uncommons.watchmaker.framework.TerminationCondition;
+import org.uncommons.watchmaker.framework.factories.AbstractCandidateFactory;
 import org.uncommons.watchmaker.framework.operators.IntArrayCrossover;
+import org.uncommons.watchmaker.framework.operators.ObjectArrayCrossover;
+import org.uncommons.watchmaker.framework.operators.StringCrossover;
 import org.uncommons.watchmaker.framework.selection.RouletteWheelSelection;
 import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.watchmaker.framework.termination.ElapsedTime;
@@ -17,14 +23,20 @@ import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import mordbad.master.R;
 import mordbad.master.data.Gatherer;
 import android.Manifest;
@@ -50,7 +62,7 @@ public class Reasoner {
     private Observable<List<HashMap<String,String>>> activityObservable;
     private boolean allFinished = false;
 
-    public Observable<ArrayList<List<HashMap<String,String>>>> allResults;
+    public Observable<List<HashMap<String,String>>[]> allResults;
     private Observer subscriber;
 
     public Reasoner(){
@@ -144,7 +156,7 @@ public class Reasoner {
     /**
      * Gets the concrete activities we recommend using the activity-types from getCategories()
      *
-     * @param population The size of the population for each generation.
+     * @param population The size of the possibilities for each generation.
      * @param activities The set of ints getCategories generated from type-array defined in strings.xml. In the design-spec this should be an int[] of five elements, because we are looking for five places.
      * @return concrete candidate activities we recommend to the user.
      */
@@ -152,14 +164,13 @@ public class Reasoner {
     public int[] getActivities(int population, int[] activities, Location location){
         //PLACEHOLDER
        int[] candidate = {0,1} ;
-        ArrayList<List<HashMap<String,String>>> allofit =new ArrayList<>(activities.length);
+        List<HashMap<String,String>>[] allofit =new List[activities.length];
         boolean[] finished = new boolean[activities.length];
         allFinished = false;
         Log.d(TAG, ""+activities.length);
 
         Observable<List<HashMap<String,String>>> observable;
         for(int i =0; i<activities.length; i++){
-            //TODO: int i gir deg ikke posisjonen i activities men verdien i activites. Dette må fikses på, slik at posisjonen i ArrayListen stemmer med designet.
             observable = gatherer.getObservable(gatherer.contructUrl(this.candidates[activities[i]],location));
 
             final int ii = i;
@@ -172,9 +183,11 @@ public class Reasoner {
 
                 @Override
                 public void onNext(List<HashMap<String, String>> hashMaps) {
-                    Log.d(TAG, "Allofitsize: "+ allofit.size() + " iterator nr:" + ii);
-                    allofit.ensureCapacity(ii);
-                    allofit.add(ii, hashMaps);
+                    Log.d(TAG, "Allofitsize: "+ allofit.length + " iterator nr:" + ii);
+//                    allofit.ensureCapacity(ii);
+
+                    allofit[ii] = hashMaps;
+//                    allofit.add(ii, hashMaps);
                     finished[ii] = true;
                     checkAllFinished(finished);
                 }
@@ -189,10 +202,13 @@ public class Reasoner {
                 public void onComplete() {
                     if(allFinished){
                         //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
-                        //generateDay();
+                        generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
                         allResults.subscribe(subscriber);
+
+                        //Once everything is done start generation of stuff.
+                        allResults.subscribe();
 
                     }
                 }
@@ -204,10 +220,36 @@ public class Reasoner {
         return candidate;
     }
 
-    private int[] generateDay() {
+    private void generateDay(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
         int[] candidates = {0,1};
 
-        return candidates;
+//        instantiateGeneticStuff();
+        //stuff for evolutionengine
+        DayFactory<HashMap<String,String>> dayFactory = new DayFactory(allofit,activities.length);
+
+
+        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator();
+
+        EvolutionaryOperator hashArrayCrossover = new ObjectArrayCrossover<HashMap<String,String>[]>();
+
+
+        SelectionStrategy<Object> selection = new RouletteWheelSelection();
+        Random rng = new MersenneTwisterRNG();
+
+
+        EvolutionEngine<HashMap<String, String>[]> engine = new GenerationalEvolutionEngine<HashMap<String, String>[]>(
+                dayFactory,
+                hashArrayCrossover,
+                dayEvaluator,
+                selection,
+                rng
+                );
+        Observable.just(engine.evolve(population,0,new ElapsedTime(15000)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+
+
     }
 
 
