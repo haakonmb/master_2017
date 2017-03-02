@@ -21,6 +21,7 @@ import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import mordbad.master.data.PlaceJSONParser;
 import mordbad.master.dss.Reasoner;
 
 
@@ -49,7 +50,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
 
     private int[] activities =  {13,13,13,13,13};
-    private ArrayList<List<HashMap<String,String>>> result;
+//    private ArrayList<List<HashMap<String,String>>> result;
     private Reasoner reasoner;
     private TextView view1;
     private TextView view2;
@@ -58,7 +59,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
     private TextView view5;
 
     private Observer subscriber;
-
+    private HashMap<String,String>[] result;
 
     public DayFragment() {
         // Required empty public constructor
@@ -106,6 +107,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         view5 = (TextView) view.findViewById(R.id.textView10);
 
         button.setOnClickListener(this);
+
         subscriber = new Observer() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -116,6 +118,11 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
             public void onNext(Object o) {
 //                view1.setText(o.);
                 view1.setText("Look daddy, Im recieving stuff in: " + TAG);
+//                view2.setText((HashMap<String,String>[]) o[0].get);
+
+
+
+                result = (HashMap<String, String>[]) o;
             }
 
             @Override
@@ -125,7 +132,27 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
             @Override
             public void onComplete() {
+                Log.d(TAG, "onComplete triggerued :O");
+                try{
 
+
+                    view1.setText(result[0].get(PlaceJSONParser.strings.place_name.toString()));
+                    view2.setText(result[1].get(PlaceJSONParser.strings.place_name.toString()));
+                    view3.setText(result[2].get(PlaceJSONParser.strings.place_name.toString()));
+                    view4.setText(result[3].get(PlaceJSONParser.strings.place_name.toString()));
+                    view5.setText(result[4].get(PlaceJSONParser.strings.place_name.toString()));
+
+                    Log.d(TAG,""
+                            + result[0] + "\n"
+                            + result[1] + "\n"
+                            + result[2] + "\n"
+                            + result[3] + "\n"
+                            + result[4] + "\n"
+                    );
+                }
+                catch(Exception e){
+                    Log.d(TAG, ""+e);
+                }
             }
         };
 

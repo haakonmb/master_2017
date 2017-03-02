@@ -107,4 +107,10 @@ public class PlaceJSONParser {
         }
         return place;
     }
+
+    public enum strings{place_name, vicinity, lat, lng, id, place_id, icon, location
+
+    }
 }
+
+

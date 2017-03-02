@@ -205,10 +205,10 @@ public class Reasoner {
                         generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
-                        allResults.subscribe(subscriber);
+//                        allResults.subscribe(subscriber);
 
                         //Once everything is done start generation of stuff.
-                        allResults.subscribe();
+//                        allResults.subscribe();
 
                     }
                 }
@@ -225,12 +225,12 @@ public class Reasoner {
 
 //        instantiateGeneticStuff();
         //stuff for evolutionengine
-        DayFactory<HashMap<String,String>> dayFactory = new DayFactory(allofit,activities.length);
+        DayFactory dayFactory = new DayFactory(allofit,activities.length);
 
 
         FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator();
 
-        EvolutionaryOperator hashArrayCrossover = new ObjectArrayCrossover<HashMap<String,String>[]>();
+        EvolutionaryOperator hashArrayCrossover = new ObjectArrayCrossover<HashMap<String,String>>();
 
 
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
@@ -244,7 +244,11 @@ public class Reasoner {
                 selection,
                 rng
                 );
-        Observable.just(engine.evolve(population,0,new ElapsedTime(15000)))
+
+
+//        Observable<HashMap<String,String>[]> obs;
+
+        Observable.just(engine.evolve(population, 0, new ElapsedTime(15000)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
