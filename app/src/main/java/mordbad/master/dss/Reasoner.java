@@ -248,7 +248,9 @@ public class Reasoner {
 
 //        Observable<HashMap<String,String>[]> obs;
 
-        Observable.just(engine.evolve(population, 0, new ElapsedTime(15000)))
+        Observable.defer(
+                () -> Observable.just(engine.evolve(population, 0, new ElapsedTime(5000)))
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
