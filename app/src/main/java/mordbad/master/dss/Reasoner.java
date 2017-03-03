@@ -2,46 +2,30 @@ package mordbad.master.dss;
 
 
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-import org.uncommons.watchmaker.framework.EvaluatedCandidate;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
-import org.uncommons.watchmaker.framework.EvolutionObserver;
 import org.uncommons.watchmaker.framework.EvolutionaryOperator;
 import org.uncommons.watchmaker.framework.FitnessEvaluator;
 import org.uncommons.watchmaker.framework.GenerationalEvolutionEngine;
 import org.uncommons.watchmaker.framework.SelectionStrategy;
-import org.uncommons.watchmaker.framework.TerminationCondition;
-import org.uncommons.watchmaker.framework.factories.AbstractCandidateFactory;
 import org.uncommons.watchmaker.framework.operators.IntArrayCrossover;
 import org.uncommons.watchmaker.framework.operators.ObjectArrayCrossover;
-import org.uncommons.watchmaker.framework.operators.StringCrossover;
 import org.uncommons.watchmaker.framework.selection.RouletteWheelSelection;
 import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import mordbad.master.R;
 import mordbad.master.data.Gatherer;
-import android.Manifest;
+
 import android.location.Location;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 
@@ -54,8 +38,8 @@ public class Reasoner {
     private String result = "";
     private Gatherer gatherer = new Gatherer();
     private Wish wish ;
-    private PlaceEvaluator pe;
-    private MersenneTwisterRNG mRng;
+    // --Commented out by Inspection (03/03/17 09:58):private PlaceEvaluator pe;
+    // --Commented out by Inspection (03/03/17 09:59):private MersenneTwisterRNG mRng;
     private EvolutionEngine<int[]> engine;
     private String[] candidates;
     private int length = 90;
@@ -86,6 +70,27 @@ public class Reasoner {
         length = candidates.length;
 //        activityObservable = gatherer.getObservable()
 
+        initiateEvolutionEngine();
+    }
+
+
+    public Reasoner(String[] candidates, HashMap<Integer,Integer> weights) {
+        this.candidates = candidates;
+        length = candidates.length;
+
+        initiateEvolutionEngine();
+    }
+
+
+    private void initiateEvolutionEngine() {
+         /*
+        What watchmaker needs:
+    A Candidate Factory
+    An Evolutionary Operator
+    A Fitness Evaluator
+    A Selection Strategy
+    A Random Number Generator
+     */
         PlaceFactory factory = new PlaceFactory<int[]>(length);
 //      Create a pieline that apllies cross-over mutation
 //         List<EvolutionaryOperator<String>> operators= new LinkedList<>();
@@ -100,45 +105,11 @@ public class Reasoner {
         Random rng = new MersenneTwisterRNG();
 
         engine = new GenerationalEvolutionEngine<int[]>(   factory,
-                                                      pipeline,
-                                                      fitnessEvaluator,
-                                                      selection,
-                                                      rng);
-    }
-
-
-    public Reasoner(String[] candidates, HashMap<Integer,Integer> weights) {
-        /*
-        What watchmaker needs:
-    A Candidate Factory
-    An Evolutionary Operator
-    A Fitness Evaluator
-    A Selection Strategy
-    A Random Number Generator
-     */
-        this.candidates = candidates;
-        length = candidates.length;
-
-        PlaceFactory factory = new PlaceFactory<int[]>(length);
-//      Create a pieline that apllies cross-over mutation
-//         List<EvolutionaryOperator<String>> operators= new LinkedList<>();
-//        operators.add(new StringMutation(chars, new Probability(0.22)));
-//        operators.add(new StringCrossover());
-//        EvolutionaryOperator<String> pipeline = new EvolutionPipeline<>(operators);
-
-
-        EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
-        FitnessEvaluator<int[]> fitnessEvaluator = new PlaceEvaluator(length);
-        SelectionStrategy<Object> selection = new RouletteWheelSelection();
-        Random rng = new MersenneTwisterRNG();
-
-        engine = new GenerationalEvolutionEngine<int[]>(factory,
                 pipeline,
                 fitnessEvaluator,
                 selection,
                 rng);
     }
-
 
     /**
      * Gets the categories of activities we recommend.
@@ -147,9 +118,8 @@ public class Reasoner {
      * @return
      */
     public int[] getCategories(int population){
-        int[] candidate = engine.evolve(population,0, new ElapsedTime(5000));
 
-        return candidate;
+        return engine.evolve(population,0, new ElapsedTime(5000));
     }
 
 
@@ -221,7 +191,7 @@ public class Reasoner {
     }
 
     private void generateDay(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
-        int[] candidates = {0,1};
+//        int[] candidates = {0,1};
 
 //        instantiateGeneticStuff();
         //stuff for evolutionengine
