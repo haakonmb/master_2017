@@ -9,7 +9,7 @@ import java.util.List;
  * Created by haakon on 20/10/16.
  */
 
-    public class PlaceEvaluator implements FitnessEvaluator<int[]> {
+    public class ActivityEvaluator implements FitnessEvaluator<int[]> {
 
 
     private int length = 90;
@@ -17,12 +17,12 @@ import java.util.List;
 
 
 
-    public PlaceEvaluator(int length){
+    public ActivityEvaluator(int length){
         this.length = length;
 
     }
 
-    public PlaceEvaluator(int length, HashMap<Integer,Integer> weight){
+    public ActivityEvaluator(int length, HashMap<Integer,Integer> weight){
         this.length = length;
         this.weights = weight;
     }
