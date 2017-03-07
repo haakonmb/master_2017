@@ -10,9 +10,58 @@ import java.util.List;
  */
 
 class DayEvaluator implements FitnessEvaluator<HashMap<String,String>[]> {
+    private DecisionConstraint[] decisionConstraint;
+
+
+    public DayEvaluator(DecisionConstraint[] decisionConstraint){
+        this.decisionConstraint = decisionConstraint;
+
+    }
+
     @Override
     public double getFitness(HashMap<String, String>[] hashMaps, List<? extends HashMap<String, String>[]> list) {
-        return 0;
+        double score = 0;
+
+        //How well does this assignment fulfill all the generated constraints?
+        score += constraintFulfillment(hashMaps);
+
+
+        //in the absence of constraint-fulfillment, how good is this assignment?
+        score += baseCaseFulfillment(hashMaps);
+
+        //Initial thought: we dont need negative numbers because this fitness-function is natural
+        //Follow-up thought: that has nothing to do with it and you lose differential information about assignments by assigning a score.
+        //Dont throw away information
+//        if(score < 0)
+//            score = 0;
+
+
+
+
+        return score;
+    }
+
+    private double baseCaseFulfillment(HashMap<String, String>[] hashMaps) {
+        double result =0;
+
+        for(HashMap<String, String> hm: hashMaps){
+
+            //something about adding up scores here
+        }
+
+        return result;
+    }
+
+    private double constraintFulfillment(HashMap<String, String>[] hashMaps) {
+        double result =0;
+        for(DecisionConstraint c: decisionConstraint){
+            //how to check for fulfillment?
+            result += c.constraint(hashMaps);
+
+        }
+
+
+        return result;
     }
 
     @Override
