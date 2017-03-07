@@ -50,4 +50,9 @@ public class Question {
     }
 
 
+    public DecisionConstraint generateConstraint() {
+
+        //TODO: fix so it actually generates constraints
+        return null;
+    }
 }

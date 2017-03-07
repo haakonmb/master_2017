@@ -38,13 +38,15 @@ public class Reasoner {
     private String result = "";
     private Gatherer gatherer = new Gatherer();
     private Wish wish ;
-    // --Commented out by Inspection (03/03/17 09:58):private PlaceEvaluator pe;
+    // --Commented out by Inspection (03/03/17 09:58):private ActivityEvaluator pe;
     // --Commented out by Inspection (03/03/17 09:59):private MersenneTwisterRNG mRng;
     private EvolutionEngine<int[]> engine;
     private String[] candidates;
     private int length = 90;
     private Observable<List<HashMap<String,String>>> activityObservable;
     private boolean allFinished = false;
+    private Question[] questions;
+    private DecisionConstraint[] constraints;
 
     public Observable<List<HashMap<String,String>>[]> allResults;
     private Observer subscriber;
@@ -74,9 +76,16 @@ public class Reasoner {
     }
 
 
-    public Reasoner(String[] candidates, HashMap<Integer,Integer> weights) {
+    public Reasoner(String[] candidates, HashMap<Integer,Integer> weights, Question[] question) {
         this.candidates = candidates;
         length = candidates.length;
+
+        this.questions = question;
+
+        constraints = new DecisionConstraint[questions.length];
+        for(int i = 0; i < questions.length; i++){
+            constraints[i] = questions[i].generateConstraint();
+        }
 
         initiateEvolutionEngine();
     }
@@ -91,7 +100,7 @@ public class Reasoner {
     A Selection Strategy
     A Random Number Generator
      */
-        PlaceFactory factory = new PlaceFactory<int[]>(length);
+        ActivityFactory factory = new ActivityFactory<int[]>(length);
 //      Create a pieline that apllies cross-over mutation
 //         List<EvolutionaryOperator<String>> operators= new LinkedList<>();
 //        operators.add(new StringMutation(chars, new Probability(0.22)));
@@ -100,7 +109,7 @@ public class Reasoner {
 
 
         EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
-        FitnessEvaluator<int[]> fitnessEvaluator = new PlaceEvaluator(length);
+        FitnessEvaluator<int[]> fitnessEvaluator = new ActivityEvaluator(length);
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
         Random rng = new MersenneTwisterRNG();
 
@@ -198,7 +207,7 @@ public class Reasoner {
         DayFactory dayFactory = new DayFactory(allofit,activities.length);
 
 
-        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator();
+        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator(constraints);
 
         EvolutionaryOperator hashArrayCrossover = new ObjectArrayCrossover<HashMap<String,String>>();
 
