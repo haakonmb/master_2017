@@ -24,17 +24,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
 import mordbad.master.data.Gatherer;
+import mordbad.master.dss.PersonModel;
 import mordbad.master.dss.Reasoner;
 import mordbad.master.dss.Wish;
+
+//import static com.activeandroid.Cache.getContext;
+//import com.activeandroid.*;
 
 public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener,Gatherer.OnGathererInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, DayFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -85,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         setContentView(R.layout.activity_main);
 
 
+//        Configuration.Builder configurationBuilder
+//        ActiveAndroid.initialize(this);
+        loadDataFromAsset();
         //Proper init of DSS
         reasoner = new Reasoner();
         gatherer = new Gatherer();
@@ -159,6 +171,50 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
         Log.d(TAG, "test");
+    }
+
+    private void loadDataFromAsset() {
+        ActiveAndroid.beginTransaction();
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+        try{
+            InputStream is = getAssets().open("turistdataalderbins.csv");
+            br = new BufferedReader(new InputStreamReader(is));
+
+
+            while((line = br.readLine()) != null){
+                String[] data = line.split(cvsSplitBy);
+                int[] intData = new int[data.length];
+                for(int i = 0; i< data.length; i++){
+                    if(data[i] != ""){
+
+                        intData[i] = Integer.getInteger(data[i]);
+                    }
+                    else{
+                        intData[i] = 0;
+                    }
+                }
+
+
+                //TODO: redesign slik at denne ikke gir deg frysninger
+                int counter = 0;
+                PersonModel personModel = new PersonModel(intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++]);
+
+                personModel.save();
+
+            }
+            ActiveAndroid.setTransactionSuccessful();
+            is.close();
+
+        }catch(Exception e){
+            Log.d(TAG, ""+e);
+        }
+        finally{
+            ActiveAndroid.endTransaction();
+
+        }
     }
 
     @Override
@@ -316,6 +372,17 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
         //TODO Then change to tourfragment when you get input from Reasoner
+    }
+
+    @Override
+    public void startActivityEvaluation(int[] dataFromQuestions) {
+        if(tourFragment != null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, tourFragment)
+                    .commit();
+
+        }
+        tourFragment.setDataFromQuestions(dataFromQuestions);
     }
 
     @Override
