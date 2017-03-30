@@ -28,21 +28,19 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
-
     //JUnit 4
-    testCompile 'junit:junit:4.12'
-
     //Google services and maps
-    compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-
     //Genetic algorithm and prereqs uncommon maths
     compile files('libs/watchmaker-framework-0.7.1.jar')
     compile files('libs/uncommons-maths-1.2.2.jar')
-
     //RXJAVA
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'io.reactivex.rxjava2:rxjava:2.0.4'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.android.support:support-v4:23.4.0'
+    testCompile 'junit:junit:4.12'
     androidTestCompile 'org.testng:testng:6.9.6'
+    compile files('libs/activeandroid-3.1-beta.jar')
 }

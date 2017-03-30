@@ -50,6 +50,7 @@ public class Reasoner {
 
     public Observable<List<HashMap<String,String>>[]> allResults;
     private Observer subscriber;
+    private int[] dataFromQuestions = {1,1,1,1,1,1};
 
     public Reasoner(){
 //        getContext().getResources().getStringArray(R.array.all_place_types);
@@ -72,7 +73,7 @@ public class Reasoner {
         length = candidates.length;
 //        activityObservable = gatherer.getObservable()
 
-        initiateEvolutionEngine();
+        initiateEvolutionEngine(dataFromQuestions);
     }
 
 
@@ -87,11 +88,11 @@ public class Reasoner {
             constraints[i] = questions[i].generateConstraint();
         }
 
-        initiateEvolutionEngine();
+        initiateEvolutionEngine(dataFromQuestions);
     }
 
 
-    private void initiateEvolutionEngine() {
+    private void initiateEvolutionEngine(int[] dataFromQuestions) {
          /*
         What watchmaker needs:
     A Candidate Factory
@@ -109,7 +110,7 @@ public class Reasoner {
 
 
         EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
-        FitnessEvaluator<int[]> fitnessEvaluator = new ActivityEvaluator(length);
+        FitnessEvaluator<int[]> fitnessEvaluator = new ActivityEvaluator(length, dataFromQuestions);
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
         Random rng = new MersenneTwisterRNG();
 
@@ -271,5 +272,10 @@ public class Reasoner {
 
     public void setSubscriber(Observer subscriber) {
         this.subscriber = subscriber;
+    }
+
+    public void setDataFromQuestions(int[] dataFromQuestions) {
+        this.dataFromQuestions = dataFromQuestions;
+        initiateEvolutionEngine(dataFromQuestions);
     }
 }

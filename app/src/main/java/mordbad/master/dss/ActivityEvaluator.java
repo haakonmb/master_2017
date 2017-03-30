@@ -14,11 +14,12 @@ import java.util.List;
 
     private int length = 90;
     private HashMap<Integer,Integer> weights;
+    private int[] data;
 
 
-
-    public ActivityEvaluator(int length){
+    public ActivityEvaluator(int length, int[] dataFromQuestions){
         this.length = length;
+        this.data = dataFromQuestions;
 
     }
 

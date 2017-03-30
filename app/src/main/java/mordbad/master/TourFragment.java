@@ -75,6 +75,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
             "website",
             "types"
     };
+    private int[] dataFromQuestions;
 
 
     /**
@@ -356,6 +357,11 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         Log.d(TAG,""+numbers);
         nameView.setText(numbers);
         mListener.setResultForDayFragment(result);
+    }
+
+    public void setDataFromQuestions(int[] dataFromQuestions) {
+        this.dataFromQuestions = dataFromQuestions;
+        mReasoner.setDataFromQuestions(dataFromQuestions);
     }
 
 

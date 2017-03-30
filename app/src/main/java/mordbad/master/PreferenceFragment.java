@@ -53,6 +53,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private Spinner mSpinner;
     private boolean questionareDone = false;
     private boolean showingAnswer = false;
+    private int[] dataFromQuestions;
 
     /**
      * Use this factory method to create a new instance of
@@ -94,12 +95,14 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         //TODO: oppdater for henting av spm fra databasen, istedenfor test-spm
         //Get the questions for css
         questions = new Question[]{
-                new Question("What is the main purpose of your visit?",new String[]{"Visiting friends","Other vacation and freetime-activities","Businesstrip", "Passing through on my way to another location", "Ski-trip","Dont Know"}),
-                new Question("In which country is your permanent residence?",new String[]{"Norway","Sweden","Denmark","Germany","Netherland","UK","USA","France","Spain","Italy","Russia","China","South-Korea","Japan","Poland","Other"}),
-                new Question("What is your age-range?",new String[]{"1-18","19-30","31-40","41-50","51-60","60+"}),
-                new Question("What is your highest education level?",new String[]{"Grunnskole","Videregående","Bachelor","Master","Researcher","Dont know"}),
-                new Question("What is your status?",new String[]{"Employed","Self-employed","Pensioner","Student","Other","Dont know"})};
+                new Question("What is the main purpose of your visit?", new String[]{"Visiting friends","Other vacation and freetime-activities","Businesstrip", "Passing through on my way to another location", "Ski-trip","Dont Know"}),
+                new Question("In which country is your permanent residence?", new String[]{"Norway","Sweden","Denmark","Germany","Netherland","UK","USA","France","Spain","Italy","Russia","China","South-Korea","Japan","Poland","Other"}),
+                new Question("What is your gender?", new String[]{"Male","Female","Other"}),
+                new Question("What is your age-range?", new String[]{"1-18","19-30","31-40","41-50","51-60","60+"}),
+                new Question("What is your highest education level?", new String[]{"Grunnskole","Videregående","Bachelor","Master","Researcher","Dont know"}),
+                new Question("What is your status?", new String[]{"Employed","Self-employed","Pensioner","Student","Other","Dont know"})};
 
+        dataFromQuestions = new int[questions.length];
         //Find all the things
         mNext = (Button) view.findViewById(R.id.next);
         mClear =(Button) view.findViewById(R.id.Clear);
@@ -242,11 +245,14 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
         if(questionareDone && !showingAnswer){
             String newStr = "";
+            int counter = 0;
             for(Question q : questions){
                 String currentStr = (String)mLevelView.getText();
                 String concatStr = q.getAnswer();
                 newStr = currentStr+"\n"+concatStr;
                 mLevelView.setText(newStr);
+                dataFromQuestions[counter] = q.getOptionNum()+1;
+                counter++;
 
             }
 
@@ -258,6 +264,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             mNext.setVisibility(Button.INVISIBLE);
 
             showingAnswer = true;
+            mListener.startActivityEvaluation(dataFromQuestions);
 
         }
         else if(!questionareDone){
@@ -334,5 +341,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         public void gathererTest();
         //public void addXp();
         public void passPreference(Wish wish );
+
+        void startActivityEvaluation(int[] dataFromQuestions);
     }
 }
