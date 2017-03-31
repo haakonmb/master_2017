@@ -54,6 +54,9 @@ public class PersonModel extends Model {
     @Column(name = "restaurant")
     public int restaurant;
 
+    public int[] preferences;
+    public static final int NUMBER_OF_PREFERENCES = 11;
+
     public PersonModel(String[] data) {
 
 
@@ -74,8 +77,15 @@ public class PersonModel extends Model {
         public int getValue(){return value;}
     }
 
+    public PersonModel(){
+
+        super();
+    }
+
         //TODO DODO: I want an enumMap instead for human-readable stuff. But it needs to come later.
     public PersonModel(int formal, int land, int kjønn, int alder, int utdanning, int status, int spise_lokal, int shoppe, int historisk, int slappe_av, int teater, int kunst, int moro, int lokal_historie, int sightseeing, int lokal_kultur, int restaurant) {
+
+        super();
         this.formal = formal;
         this.land = land;
         this.kjønn = kjønn;
@@ -93,5 +103,7 @@ public class PersonModel extends Model {
         this.sightseeing = sightseeing;
         this.lokal_kultur = lokal_kultur;
         this.restaurant = restaurant;
+
+        this.preferences = new int[] {spise_lokal, shoppe,historisk,slappe_av,teater,kunst,moro,lokal_historie,sightseeing,lokal_kultur,restaurant };
     }
 }
