@@ -1,11 +1,5 @@
-general:
-         artifacts:
-                     - "~/build_output.zip" 
-                        
-
 test:
           override:
                       - ./gradlew assembleRelease
                       - zip -r ~/build_output.zip app/build/outputs/
-                      - cp -r master/build/outputs 
-                      - zip -r ~/build_output.zip app/build/outputs/$CIRCLE_ARTIFACTS
+                      - cp -r app/build/outputs $CIRCLE_ARTIFACTS
