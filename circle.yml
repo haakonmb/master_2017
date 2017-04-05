@@ -1,6 +1,6 @@
 general:
          artifacts:
-                     - "~/build_output.zip" # Save APK's, Lint Results, and Test Results
+                     - "~/build_output.zip" 
                         
 
 test:
@@ -8,4 +8,4 @@ test:
                       - ./gradlew assembleRelease
                       - zip -r ~/build_output.zip app/build/outputs/
                       - cp -r master/build/outputs 
-                        - zip -r ~/build_output.zip app/build/outputs/$CIRCLE_ARTIFACTS
+                      - zip -r ~/build_output.zip app/build/outputs/$CIRCLE_ARTIFACTS
