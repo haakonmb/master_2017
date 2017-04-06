@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                     getResources().getIdentifier("probability",
                             "raw", getPackageName()));
             br = new BufferedReader(new InputStreamReader(is));
-
+            line = br.readLine();
 
             while((line = br.readLine()) != null){
                 String[] data = line.split(cvsSplitBy);
