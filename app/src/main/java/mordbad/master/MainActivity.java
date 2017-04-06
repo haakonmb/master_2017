@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mordbad.master.data.Gatherer;
 import mordbad.master.dss.PersonModel;
@@ -174,45 +175,42 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     private void loadDataFromAsset() {
-        ActiveAndroid.beginTransaction();
+//        ActiveAndroid.beginTransaction();
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
+        Map<Integer, Double> lookup_probability = new HashMap<>();
 
         try{
-            InputStream is = getAssets().open("turistdataalderbins.csv");
+            InputStream is = getAssets().open("probability.csv");
             br = new BufferedReader(new InputStreamReader(is));
 
 
             while((line = br.readLine()) != null){
                 String[] data = line.split(cvsSplitBy);
                 int[] intData = new int[data.length];
-                for(int i = 0; i< data.length; i++){
-                    if(data[i] != ""){
 
-                        intData[i] = Integer.getInteger(data[i]);
-                    }
-                    else{
-                        intData[i] = 0;
-                    }
-                }
+                int key = Integer.parseInt(data[0] + data[1] + data[2]);
+
+                double value = Double.parseDouble(data[3]);
+
+                Log.d(TAG,""+key+" :"+ value);
+                lookup_probability.put(key,value);
 
 
-                //TODO: redesign slik at denne ikke gir deg frysninger
-                int counter = 0;
-                PersonModel personModel = new PersonModel(intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++],intData[counter++]);
 
-                personModel.save();
+
+
 
             }
-            ActiveAndroid.setTransactionSuccessful();
+//            ActiveAndroid.setTransactionSuccessful();
             is.close();
 
         }catch(Exception e){
             Log.d(TAG, ""+e);
         }
         finally{
-            ActiveAndroid.endTransaction();
+//            ActiveAndroid.endTransaction();
 
         }
     }
