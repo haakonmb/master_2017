@@ -182,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         Map<Integer, Double> lookup_probability = new HashMap<>();
 
         try{
-            InputStream is = getAssets().open("probability.csv");
+            InputStream is = getResources().openRawResource(
+                    getResources().getIdentifier("probability",
+                            "raw", getPackageName()));
             br = new BufferedReader(new InputStreamReader(is));
 
 
