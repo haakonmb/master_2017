@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
 import mordbad.master.data.Gatherer;
 import mordbad.master.dss.PersonModel;
 import mordbad.master.dss.Reasoner;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     //Init Decision support system parts
     private Gatherer gatherer;
     private Reasoner reasoner;
+    Map<Integer, Double> lookup_probability;
+    Observable<Map<Integer,Double>> probability;
 
 
     //fragments ohoy!
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private TextView mLongitudeText;
 
 
+
     private int permissionFine;
     private int permissionCoarse;
     private String[] permissions;
@@ -101,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         //Proper init of DSS
         reasoner = new Reasoner();
         gatherer = new Gatherer();
+
+        gatherer.setup(this);
 
 
         //Check for permissions
@@ -142,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             dayFragment = new DayFragment();
 
             //gir gatherer callback-mulighet
-            gatherer.setup(this);
+
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             // firstFragment.setArguments(getIntent().getExtras());
@@ -171,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
 
-        Log.d(TAG, "test");
     }
 
     private void loadDataFromAsset() {
@@ -179,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
-        Map<Integer, Double> lookup_probability = new HashMap<>();
+       lookup_probability = new HashMap<>();
 
         try{
             InputStream is = getResources().openRawResource(
@@ -196,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
                 double value = Double.parseDouble(data[3]);
 
-                Log.d(TAG,""+key+" :"+ value);
+//                Log.d(TAG,""+key+" :"+ value);
                 lookup_probability.put(key,value);
 
 
@@ -213,13 +218,14 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         }
         finally{
 //            ActiveAndroid.endTransaction();
-
+            probability = Observable.just(lookup_probability);
         }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        setupDrawer();
         mDrawerToggle.syncState();
 
 
@@ -380,9 +386,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, tourFragment)
                     .commit();
-
+            tourFragment.setDataFromQuestions(dataFromQuestions);
         }
-        tourFragment.setDataFromQuestions(dataFromQuestions);
+
     }
 
     @Override

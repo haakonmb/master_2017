@@ -361,6 +361,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
 
     public void setDataFromQuestions(int[] dataFromQuestions) {
         this.dataFromQuestions = dataFromQuestions;
+        Log.d(TAG,""+dataFromQuestions[0]);
         mReasoner.setDataFromQuestions(dataFromQuestions);
     }
 
