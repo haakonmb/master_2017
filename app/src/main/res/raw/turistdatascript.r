@@ -1,6 +1,6 @@
 
 
-library(data.table)
+
 library(plyr)
 data <- read.csv("turistdataalderbinlandbin.csv")
 
@@ -42,5 +42,5 @@ for(column in c(7:17)){
 df.prob.pre  <- data.frame(matrix(unlist(probability.independent), nrow=11, byrow=T))
 df.prob.post <- data.frame(matrix(unlist(probability.dependent), nrow=275, byrow=T))
 
-write.csv(df.prob.pre,"probability.apriori.csv",row.names=FALSE)
-write.csv(df.prob.post,"probability.postpriori.csv",row.names=FALSE)
+write.csv(df.prob.pre,"probability_apriori.csv",row.names=FALSE)
+write.csv(df.prob.post,"probability_postpriori.csv",row.names=FALSE)
