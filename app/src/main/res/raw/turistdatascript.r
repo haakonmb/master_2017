@@ -39,7 +39,8 @@ for(column in c(7:17)){
   counter <- counter +1
 }
 
+df.prob.pre  <- data.frame(matrix(unlist(probability.independent), nrow=11, byrow=T))
+df.prob.post <- data.frame(matrix(unlist(probability.dependent), nrow=275, byrow=T))
 
-
-write.csv(probability.independent,"probability.apriori.csv")
-write.csv(probability.dependent,"probability.postpriori.csv")
+write.csv(df.prob.pre,"probability.apriori.csv",row.names=FALSE)
+write.csv(df.prob.post,"probability.postpriori.csv",row.names=FALSE)
