@@ -34,6 +34,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     //Init Decision support system parts
     private Gatherer gatherer;
-    private Reasoner reasoner;
-    Map<Integer, Double> lookup_probability;
-    Observable<Map<Integer,Double>> probability;
+    public Reasoner reasoner;
+    Map<Integer, Double[]> lookup_probability;
+    Observable<Map<Integer,Double[]>> probability;
 
 
     //fragments ohoy!
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
         try{
             InputStream is = getResources().openRawResource(
-                    getResources().getIdentifier("probability",
+                    getResources().getIdentifier("probability_postpriori",
                             "raw", getPackageName()));
             br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
@@ -197,12 +198,19 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                 String[] data = line.split(cvsSplitBy);
                 int[] intData = new int[data.length];
 
-                int key = Integer.parseInt(data[0] + data[1] + data[2]);
+                int key = Integer.parseInt(data[0] + data[1] );
 
-                double value = Double.parseDouble(data[3]);
+//                Double[] value = {Double.parseDouble(data[2]), Double.parseDouble(data[3]) };
 
-//                Log.d(TAG,""+key+" :"+ value);
-                lookup_probability.put(key,value);
+                //Iterating through the rest of the values while skipping the key.
+                List<Double> tmp = new ArrayList<>();
+                for(int i = 2; i < data.length; i++){
+                    tmp.add(Double.parseDouble(data[i]));
+
+                }
+
+//              Making the value into an array of the correct type and size automagically
+                lookup_probability.put(key,tmp.toArray(new Double[tmp.size()]));
 
 
 
