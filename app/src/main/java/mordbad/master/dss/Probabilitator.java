@@ -1,6 +1,7 @@
 package mordbad.master.dss;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,12 +13,30 @@ public class Probabilitator {
     Map<String, Double[]> evidence_probabilities;
     int[] data;
     public double[] probabilities = new double[11];
+    public Map<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(0.00001);
+
 
     public Probabilitator(Double[] priors, Map<String,Double[]> evidence, int[] data){
         this.prior_probabilities = priors;
         this.evidence_probabilities = evidence;
         this.data= data;
         calculateProbabilities();
+        convertProbabilitesToPositions();
+
+    }
+
+    private void convertProbabilitesToPositions() {
+        int[][] allmaps = TouristEnums.all_maps;
+
+        for(int map_value = 0; map_value< allmaps.length; map_value++){
+            int[] map = allmaps[map_value];
+
+            for(int map_position= 0; map_position< map.length; map_position++){
+                map_activities_to_probability_for_yes.put(map[map_position], probabilities[map_position]);
+
+            }
+
+        }
 
     }
 

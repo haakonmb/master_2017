@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private int permissionCoarse;
     private String[] permissions;
     private int requestCode;
-    public Observable<double[]> data_adjusted_probabilities;
+    public Observable<Map<Integer,Double>> data_adjusted_probabilities;
     private Double[] priors_from_data;
 
 
@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     @Override
     public void startActivityEvaluation(int[] dataFromQuestions) {
         Probabilitator probs = new Probabilitator(priors_from_data, lookup_probability, dataFromQuestions);
-        data_adjusted_probabilities = Observable.just(probs.probabilities);
+        data_adjusted_probabilities = Observable.just(probs.map_activities_to_probability_for_yes);
     }
 
     @Override

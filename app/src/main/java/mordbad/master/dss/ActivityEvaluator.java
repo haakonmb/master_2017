@@ -2,7 +2,6 @@ package mordbad.master.dss;
 
 import org.uncommons.watchmaker.framework.FitnessEvaluator;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -13,8 +12,8 @@ import java.util.List;
 
 
     private int length = 90;
-    private HashMap<Integer,Integer> weights;
     private int[] data;
+    private DefaultHashMap<Integer, Double> weights;
 
 
     public ActivityEvaluator(int length, int[] dataFromQuestions){
@@ -23,27 +22,46 @@ import java.util.List;
 
     }
 
-    public ActivityEvaluator(int length, HashMap<Integer,Integer> weight){
+    public ActivityEvaluator(int length, DefaultHashMap<Integer, Double> weight){
         this.length = length;
         this.weights = weight;
     }
 
     @Override
     public double getFitness(int[] ints, List<? extends int[]> list) {
-        //TODO: implement actual fitness-score in a good way
-        //ATM only scores based on difference between highest possible sum and actual sum of integers.
-        //Should use generated constraints in a natural way instead
-        int matches =0;
-        int max = length*ints.length;
-        int candidate = 0;
-        for(int n: ints){
-            candidate+=n;
+        double score = 0;
+
+        //How well does this assignment fulfill all the generated constraints?
+        score += constraintFulfillment(ints);
+
+
+        //in the absence of constraint-fulfillment, how good is this assignment?
+        score += baseCaseFulfillment(ints);
+
+        //Initial thought: we dont need negative numbers because this fitness-function is natural
+        //Follow-up thought: that has nothing to do with it and you lose differential information about assignments by assigning a score.
+        //Dont throw away information
+//        if(score < 0)
+//            score = 0;
+
+
+
+
+        return score;
+    }
+
+    private double baseCaseFulfillment(int[] ints) {
+        double score = 100;
+
+        for(int i: ints){
+           score = score * weights.get(i);
 
         }
-        matches = max - candidate;
+        return score;
+    }
 
-
-        return matches;
+    private double constraintFulfillment(int[] ints) {
+        return 0;
     }
 
     @Override
@@ -51,16 +69,6 @@ import java.util.List;
         return false;
     }
 
-
-    private double individualScore(){
-
-       return 0;
-    }
-
-    private double constraintScore(){
-
-        return 0;
-    }
 
 
 }
