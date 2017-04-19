@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private Gatherer gatherer;
     public Reasoner reasoner;
     Map<String, Double[]> lookup_probability;
-    Observable<Map<String,Double[]>> probability;
 
 
     //fragments ohoy!
@@ -97,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private int permissionCoarse;
     private String[] permissions;
     private int requestCode;
-    public Observable<Double[]> priors;
     public Observable<double[]> data_adjusted_probabilities;
+    private Double[] priors_from_data;
 
 
     @Override
@@ -216,8 +215,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 //              Making the value into an array of the correct type and size automagically
             lookup_probability.put(key,tmp.toArray(new Double[tmp.size()]));
         }
-        priors = Observable.just(apriori_double);
-        probability = Observable.just(lookup_probability);
+
+        priors_from_data = apriori_double;
 
     }
 
@@ -381,16 +380,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     @Override
     public void startActivityEvaluation(int[] dataFromQuestions) {
-
-        Map<String,Double[]> evidence;
-
-        Double[] prior;
-        priors.subscribe(doubles -> prior = doubles);
-        probability.subscribe(stringMap -> evidence = stringMap);
-
-
-
-        Probabilitator probs = new Probabilitator(prior, evidence, dataFromQuestions);
+        Probabilitator probs = new Probabilitator(priors_from_data, lookup_probability, dataFromQuestions);
         data_adjusted_probabilities = Observable.just(probs.probabilities);
     }
 
