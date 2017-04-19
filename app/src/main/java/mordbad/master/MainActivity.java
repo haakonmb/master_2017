@@ -30,6 +30,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -42,6 +45,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import mordbad.master.data.Gatherer;
 import mordbad.master.dss.PersonModel;
+import mordbad.master.dss.Probabilitator;
 import mordbad.master.dss.Reasoner;
 import mordbad.master.dss.Wish;
 
@@ -65,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     //Init Decision support system parts
     private Gatherer gatherer;
     public Reasoner reasoner;
-    Map<Integer, Double[]> lookup_probability;
-    Observable<Map<Integer,Double[]>> probability;
+    Map<String, Double[]> lookup_probability;
+    Observable<Map<String,Double[]>> probability;
 
 
     //fragments ohoy!
@@ -93,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private int permissionCoarse;
     private String[] permissions;
     private int requestCode;
+    public Observable<Double[]> priors;
+    public Observable<double[]> data_adjusted_probabilities;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,52 +189,36 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     private void loadDataFromAsset() {
 //        ActiveAndroid.beginTransaction();
-        BufferedReader br = null;
-        String line = "";
         String cvsSplitBy = ",";
        lookup_probability = new HashMap<>();
 
-        try{
-            InputStream is = getResources().openRawResource(
-                    getResources().getIdentifier("probability_postpriori",
-                            "raw", getPackageName()));
-            br = new BufferedReader(new InputStreamReader(is));
-            line = br.readLine();
+        String[] apriori = getResources().getStringArray(R.array.apriori);
+        String[] evidence = getResources().getStringArray(R.array.postpriori);
+        Double[] apriori_double= new Double[11]               ;
 
-            while((line = br.readLine()) != null){
-                String[] data = line.split(cvsSplitBy);
-                int[] intData = new int[data.length];
+        for(int i=0; i< apriori.length; i++){
+            apriori_double[i] = Double.parseDouble( apriori[i]);
 
-                int key = Integer.parseInt(data[0] + data[1] );
+        }
 
-//                Double[] value = {Double.parseDouble(data[2]), Double.parseDouble(data[3]) };
-
-                //Iterating through the rest of the values while skipping the key.
-                List<Double> tmp = new ArrayList<>();
-                for(int i = 2; i < data.length; i++){
-                    tmp.add(Double.parseDouble(data[i]));
-
-                }
-
-//              Making the value into an array of the correct type and size automagically
-                lookup_probability.put(key,tmp.toArray(new Double[tmp.size()]));
+        for(String s: evidence){
+            String[] data = s.split(cvsSplitBy);
+            String key = data[0] + data[1];
 
 
-
-
-
+            List<Double> tmp = new ArrayList<>();
+            for(int i = 2; i < data.length; i++){
+                tmp.add(Double.parseDouble(data[i]));
 
             }
-//            ActiveAndroid.setTransactionSuccessful();
-            is.close();
 
-        }catch(Exception e){
-            Log.d(TAG, ""+e);
+
+//              Making the value into an array of the correct type and size automagically
+            lookup_probability.put(key,tmp.toArray(new Double[tmp.size()]));
         }
-        finally{
-//            ActiveAndroid.endTransaction();
-            probability = Observable.just(lookup_probability);
-        }
+        priors = Observable.just(apriori_double);
+        probability = Observable.just(lookup_probability);
+
     }
 
     @Override
@@ -390,13 +381,17 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     @Override
     public void startActivityEvaluation(int[] dataFromQuestions) {
-        if(tourFragment != null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, tourFragment)
-                    .commit();
-            tourFragment.setDataFromQuestions(dataFromQuestions);
-        }
 
+        Map<String,Double[]> evidence;
+
+        Double[] prior;
+        priors.subscribe(doubles -> prior = doubles);
+        probability.subscribe(stringMap -> evidence = stringMap);
+
+
+
+        Probabilitator probs = new Probabilitator(prior, evidence, dataFromQuestions);
+        data_adjusted_probabilities = Observable.just(probs.probabilities);
     }
 
     @Override

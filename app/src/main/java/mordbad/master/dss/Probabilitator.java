@@ -11,7 +11,7 @@ public class Probabilitator {
     Double[] prior_probabilities;
     Map<String, Double[]> evidence_probabilities;
     int[] data;
-    double[] probabilities = new double[11];
+    public double[] probabilities = new double[11];
 
     public Probabilitator(Double[] priors, Map<String,Double[]> evidence, int[] data){
         this.prior_probabilities = priors;
