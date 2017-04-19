@@ -73,26 +73,28 @@ public class Reasoner {
         length = candidates.length;
 //        activityObservable = gatherer.getObservable()
 
-        initiateEvolutionEngine(dataFromQuestions);
+//        Probabilitator probabilitator = new Probabilitator()
     }
 
 
-    public Reasoner(String[] candidates, HashMap<Integer,Integer> weights, Question[] question) {
+    public Reasoner(String[] candidates, DefaultHashMap<Integer, Double> weights) {
         this.candidates = candidates;
         length = candidates.length;
 
-        this.questions = question;
+//        this.questions = question;
 
-        constraints = new DecisionConstraint[questions.length];
-        for(int i = 0; i < questions.length; i++){
-            constraints[i] = questions[i].generateConstraint();
-        }
+//        constraints = new DecisionConstraint[questions.length];
+//        for(int i = 0; i < questions.length; i++){
+//            constraints[i] = questions[i].generateConstraint();
+//        }
 
-        initiateEvolutionEngine(dataFromQuestions);
+        initiateEvolutionEngine(weights);
     }
 
 
-    private void initiateEvolutionEngine(int[] dataFromQuestions) {
+
+
+    private void initiateEvolutionEngine(DefaultHashMap<Integer,Double> weights) {
          /*
         What watchmaker needs:
     A Candidate Factory
@@ -110,7 +112,7 @@ public class Reasoner {
 
 
         EvolutionaryOperator<int[]> pipeline = new IntArrayCrossover();
-        FitnessEvaluator<int[]> fitnessEvaluator = new ActivityEvaluator(length, dataFromQuestions);
+        FitnessEvaluator<int[]> fitnessEvaluator = new ActivityEvaluator(length, weights);
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
         Random rng = new MersenneTwisterRNG();
 
@@ -274,8 +276,5 @@ public class Reasoner {
         this.subscriber = subscriber;
     }
 
-    public void setDataFromQuestions(int[] dataFromQuestions) {
-        this.dataFromQuestions = dataFromQuestions;
-        initiateEvolutionEngine(dataFromQuestions);
-    }
+
 }
