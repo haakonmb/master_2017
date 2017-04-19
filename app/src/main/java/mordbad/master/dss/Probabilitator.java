@@ -13,7 +13,7 @@ public class Probabilitator {
     Map<String, Double[]> evidence_probabilities;
     int[] data;
     public double[] probabilities = new double[11];
-    public Map<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(0.00001);
+    public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(0.00001);
 
 
     public Probabilitator(Double[] priors, Map<String,Double[]> evidence, int[] data){
