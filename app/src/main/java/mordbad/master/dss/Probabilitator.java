@@ -21,8 +21,13 @@ public class Probabilitator {
         this.evidence_probabilities = evidence;
         this.data= data;
         calculateProbabilities();
+        normalizeProbabilites();
         convertProbabilitesToPositions();
 
+    }
+
+    private void normalizeProbabilites() {
+        //TODO: implement normalization so things arent out of wack.
     }
 
     private void convertProbabilitesToPositions() {
