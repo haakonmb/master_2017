@@ -169,6 +169,7 @@ public class Reasoner {
 //                    allofit.ensureCapacity(ii);
 
                     allofit[ii] = hashMaps;
+                    Log.d(TAG,""+ ii + ":" + hashMaps.toArray()[0].toString());
 //                    allofit.add(ii, hashMaps);
                     finished[ii] = true;
                     checkAllFinished(finished);
