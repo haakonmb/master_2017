@@ -37,7 +37,7 @@ public class Probabilitator {
             int[] map = allmaps[map_value];
 
             for(int map_position= 0; map_position< map.length; map_position++){
-                map_activities_to_probability_for_yes.put(map[map_position], probabilities[map_position]);
+                map_activities_to_probability_for_yes.put(map[map_position], probabilities[map_value]);
 
             }
 
