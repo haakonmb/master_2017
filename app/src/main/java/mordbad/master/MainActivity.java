@@ -371,7 +371,6 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     public void passPreference(Wish wish) {
         //send wish to the recommender for processing
         this.wish = wish;
-        events = reasoner.getEvents(wish);
         //TODO Change to loading screen while processing
         //
 
