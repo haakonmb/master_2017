@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     private void addDrawerItems() {
-        String[] drawerItems = {"LevelTest", "Tour", "Map", "LevelTest"};
+        String[] drawerItems = {"LevelTest", "Activities", "Map", "Day"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
         mDrawerList.setAdapter(mAdapter);
     }

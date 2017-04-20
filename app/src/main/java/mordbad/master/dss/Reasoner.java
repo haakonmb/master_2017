@@ -187,7 +187,7 @@ public class Reasoner {
                         generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
-//                        allResults.subscribe(subscriber);
+                        allResults.subscribe(subscriber);
 
                         //Once everything is done start generation of stuff.
 //                        allResults.subscribe();
