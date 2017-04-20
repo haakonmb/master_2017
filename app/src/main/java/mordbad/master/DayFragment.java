@@ -166,7 +166,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
     private void makeLink() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("https://www.google.com/maps/dir");
+        stringBuilder.append("https://www.google.com/maps/dir/Current+Location");
         for(HashMap<String,String> place : result){
 
             stringBuilder.append("/");
