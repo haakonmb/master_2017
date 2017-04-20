@@ -187,7 +187,7 @@ public class Reasoner {
                         generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
-                        allResults.subscribe(subscriber);
+//                        allResults.subscribe(subscriber);
 
                         //Once everything is done start generation of stuff.
 //                        allResults.subscribe();
@@ -230,6 +230,7 @@ public class Reasoner {
 
 //        Observable<HashMap<String,String>[]> obs;
 
+        Log.d(TAG,"generateday got called");
         Observable.defer(
                 () -> Observable.just(engine.evolve(population, 0, new ElapsedTime(5000)))
                 )
@@ -251,26 +252,6 @@ public class Reasoner {
         }
         allFinished = everyone;
     }
-
-    public String[] getEvents(Wish wish){
-        //Get possible events according to time and location
-        String[] str = gatherer.getEvents(wish);
-        this.wish = wish;
-        //TODO Process them for relevancy
-        str = process(str);
-
-        return str;
-    }
-
-
-    private String[] process(String[] events){
-
-        //TODO Do DSS stuff here and in sub-methods
-
-
-        return new String[0];
-    }
-
 
     public void setSubscriber(Observer subscriber) {
         this.subscriber = subscriber;
