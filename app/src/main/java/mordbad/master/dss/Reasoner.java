@@ -187,9 +187,9 @@ public class Reasoner {
                     if(allFinished){
                         //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
                         Log.d(TAG,""+ allofit[0].get(0).get(PlaceJSONParser.strings.place_name.toString()));
-                        HashMap<String,String>[] result =generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
+                        helperMethodForCallingGenerateDayAndAssigningSubscriber(population, activities, allofit);
 
 //                        Observable<HashMap<String,String>[]> obs = Observable.just(result)
 //                                .subscribe(subscriber);
@@ -204,8 +204,14 @@ public class Reasoner {
 
         }
 
-
         return candidate;
+    }
+
+    private void helperMethodForCallingGenerateDayAndAssigningSubscriber(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
+
+        HashMap<String,String>[] result =generateDay(population, activities,allofit);
+
+        Observable.just(result).subscribe(subscriber);
     }
 
     private HashMap<String, String>[] generateDay(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
@@ -271,7 +277,7 @@ public class Reasoner {
         allFinished = everyone;
     }
 
-    public void setSubscriber(Observer subscriber) {
+    public void setSubscriber(Observer<HashMap<String,String>[]> subscriber) {
         this.subscriber = subscriber;
     }
 

@@ -58,7 +58,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
     private TextView view4;
     private TextView view5;
 
-    private Observer subscriber;
+    private Observer<HashMap<String,String>[]> subscriber;
     private HashMap<String,String>[] result;
 
     public DayFragment() {
@@ -108,21 +108,18 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
         button.setOnClickListener(this);
 
-        subscriber = new Observer() {
+        subscriber = new Observer<HashMap<String,String>[]>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(Object o) {
-//                view1.setText(o.);
+            public void onNext(HashMap<String, String>[] hashMaps) {
+
                 view1.setText("Look daddy, Im recieving stuff in: " + TAG);
-//                view2.setText((HashMap<String,String>[]) o[0].get);
+                result = hashMaps;
 
-
-
-                result = (HashMap<String, String>[]) o;
             }
 
             @Override
