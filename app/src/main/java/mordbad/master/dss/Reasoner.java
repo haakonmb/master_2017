@@ -24,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import mordbad.master.data.Gatherer;
+import mordbad.master.data.PlaceJSONParser;
 
 import android.location.Location;
 import android.util.Log;
@@ -169,7 +170,7 @@ public class Reasoner {
 //                    allofit.ensureCapacity(ii);
 
                     allofit[ii] = hashMaps;
-                    Log.d(TAG,""+ ii + ":" + hashMaps.toArray()[0].toString());
+//                    Log.d(TAG,""+ ii + ":" + hashMaps.get;
 //                    allofit.add(ii, hashMaps);
                     finished[ii] = true;
                     checkAllFinished(finished);
@@ -185,6 +186,7 @@ public class Reasoner {
                 public void onComplete() {
                     if(allFinished){
                         //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
+                        Log.d(TAG,""+ allofit[0].get(0).get(PlaceJSONParser.strings.place_name.toString()));
                         HashMap<String,String>[] result =generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
