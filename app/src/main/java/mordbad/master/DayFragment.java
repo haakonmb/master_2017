@@ -171,11 +171,12 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
             stringBuilder.append("/");
             stringBuilder.append(place.get(PlaceJSONParser.strings.lat.toString())+",");
-            stringBuilder.append(place.get(PlaceJSONParser.strings.lng));
+            stringBuilder.append(place.get(PlaceJSONParser.strings.lng.toString()));
 
         }
 
         maplink.setText(stringBuilder.toString());
+        Log.d(TAG,stringBuilder.toString());
 
     }
 
