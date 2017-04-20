@@ -151,7 +151,7 @@ public class Gatherer {
             //TODO: fix hack / mem-leak
             while( ( line = br.readLine())  != null){
                 sb.append(line);
-                Log.d(TAG, "dURL " + line);
+//                Log.d(TAG, "dURL " + line);
             }
 
             data = sb.toString();
