@@ -49,7 +49,7 @@ public class Reasoner {
     private DecisionConstraint[] constraints;
 
     public Observable<List<HashMap<String,String>>[]> allResults;
-    private Observer subscriber;
+    private Observer<HashMap<String,String>[]> subscriber;
     private int[] dataFromQuestions = {1,1,1,1,1,1};
 
     public Reasoner(){
@@ -184,9 +184,12 @@ public class Reasoner {
                 public void onComplete() {
                     if(allFinished){
                         //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
-                        generateDay(population, activities,allofit);
+                        HashMap<String,String>[] result =generateDay(population, activities,allofit);
                         Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
+
+//                        Observable<HashMap<String,String>[]> obs = Observable.just(result)
+//                                .subscribe(subscriber);
 //                        allResults.subscribe(subscriber);
 
                         //Once everything is done start generation of stuff.
@@ -202,7 +205,7 @@ public class Reasoner {
         return candidate;
     }
 
-    private void generateDay(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
+    private HashMap<String, String>[] generateDay(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
 //        int[] candidates = {0,1};
 
 //        instantiateGeneticStuff();
@@ -219,7 +222,7 @@ public class Reasoner {
         Random rng = new MersenneTwisterRNG();
 
 
-        EvolutionEngine<HashMap<String, String>[]> engine = new GenerationalEvolutionEngine<HashMap<String, String>[]>(
+        EvolutionEngine<HashMap<String, String>[]> engine_day = new GenerationalEvolutionEngine<HashMap<String, String>[]>(
                 dayFactory,
                 hashArrayCrossover,
                 dayEvaluator,
@@ -231,14 +234,14 @@ public class Reasoner {
 //        Observable<HashMap<String,String>[]> obs;
 
         Log.d(TAG,"generateday got called");
-        Observable.defer(
-                () -> Observable.just(engine.evolve(population, 0, new ElapsedTime(5000)))
-                )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+        HashMap<String, String>[] results = engine_day.evolve(population,0,new ElapsedTime(5000));
+        Log.d(TAG,""+results.toString());
+//        Observable<HashMap<String, String>[]> observable = Observable.just(engine.evolve(population, 0, new ElapsedTime(5000)))
+
+//                .subscribe(subscriber);
 
 
+        return results;
     }
 
 
