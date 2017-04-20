@@ -216,7 +216,19 @@ public class Reasoner {
         DayFactory dayFactory = new DayFactory(allofit,activities.length);
 
 
-        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator(constraints);
+        //TODO: get actual constraints
+        DecisionConstraint test = new DecisionConstraint() {
+            @Override
+            public double constraint(HashMap[] assignment) {
+                return 1;
+            }
+
+            @Override
+            public double constraint(Object assignment) {
+                return 0;
+            }
+        };
+        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator(new DecisionConstraint[]{test});
 
         EvolutionaryOperator hashArrayCrossover = new ObjectArrayCrossover<HashMap<String,String>>();
 
