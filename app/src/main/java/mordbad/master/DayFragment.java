@@ -60,6 +60,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
     private Observer<HashMap<String,String>[]> subscriber;
     private HashMap<String,String>[] result;
+    private TextView maplink;
 
     public DayFragment() {
         // Required empty public constructor
@@ -106,6 +107,8 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         view4 = (TextView) view.findViewById(R.id.textView9);
         view5 = (TextView) view.findViewById(R.id.textView10);
 
+        maplink = (TextView) view.findViewById(R.id.textView11);
+
         button.setOnClickListener(this);
 
         subscriber = new Observer<HashMap<String,String>[]>() {
@@ -146,6 +149,8 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
                             + result[3] + "\n"
                             + result[4] + "\n"
                     );
+                    makeLink();
+
                 }
                 catch(Exception e){
                     Log.d(TAG, ""+e);
@@ -157,6 +162,21 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         reasoner = new Reasoner(getResources().getStringArray(R.array.all_place_types));
 
         return view;
+    }
+
+    private void makeLink() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("https://www.google.com/maps/dir");
+        for(HashMap<String,String> place : result){
+
+            stringBuilder.append("/");
+            stringBuilder.append(place.get(PlaceJSONParser.strings.lat.toString())+",");
+            stringBuilder.append(place.get(PlaceJSONParser.strings.lng));
+
+        }
+
+        maplink.setText(stringBuilder.toString());
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
