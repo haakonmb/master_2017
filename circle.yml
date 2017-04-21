@@ -1,5 +1,5 @@
 test:
           override:
                       - ./gradlew assembleDebug
-                      - zip -r ~/build_output.zip app/build/outputs/
+                      - zip -r ~/build_output.zip app/build/outputs/apk/
                       - cp -r app/build/outputs $CIRCLE_ARTIFACTS
