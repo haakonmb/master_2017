@@ -8,11 +8,11 @@ import java.util.Random;
  * Created by haakon on 01/11/16.
  */
 
-public class PlaceFactory<T> extends AbstractCandidateFactory<int[]> {
+public class ActivityFactory<T> extends AbstractCandidateFactory<int[]> {
 
     private int bound = 90;
 
-    public PlaceFactory(int candidates){
+    public ActivityFactory(int candidates){
         bound = candidates;
 
     }

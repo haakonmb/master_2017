@@ -16,7 +16,13 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
+import java.util.Observer;
+
+import mordbad.master.dss.DefaultHashMap;
+import mordbad.master.dss.Probabilitator;
 import mordbad.master.dss.Reasoner;
 
 
@@ -75,6 +81,9 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
             "website",
             "types"
     };
+    private int[] dataFromQuestions;
+    private static DefaultHashMap<Integer, Double> weights;
+    private static Probabilitator probabilitator;
 
 
     /**
@@ -97,6 +106,10 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
 
     public TourFragment() {
         // Required empty public constructor
+    }
+
+    public static void setProbabilitator(Probabilitator probabilitator) {
+        TourFragment.probabilitator = probabilitator;
     }
 
     @Override
@@ -168,7 +181,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         // Setting adapter on Spinner to set question options
         spinnerSetClickAndContent(content,allPlaceTypes);
 
-        mReasoner = new Reasoner(allPlaceTypes);
+        mReasoner = new Reasoner(allPlaceTypes,probabilitator.map_activities_to_probability_for_yes);
 
         populate();
 
@@ -310,8 +323,6 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         placeDetails = result;
 
 //        nameView.setText(result);
-
-
     }
 
 
@@ -321,16 +332,9 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         switch(v.getId()){
             case R.id.button:
                 printResult();
+//                setResult();
                 break;
-
-
-
-
-
-
         }
-
-
     }
 
     private void printResult() {
@@ -338,8 +342,9 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         int gen = (int) one.getSelectedItem();
 
         Log.d(TAG, "gen :" + gen );
-        int[] result = mReasoner.getResult(gen);
-//        result = mReasoner.getResult(gen);
+        //TODO: move getCategories out of the print-function and into its own method for clarity of functionality.
+        int[] result = mReasoner.getCategories(gen);
+//        result = mReasoner.getCategories(gen);
 
         StringBuilder build = new StringBuilder();
 
@@ -353,8 +358,39 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
         String numbers = build.toString();
         Log.d(TAG,""+numbers);
         nameView.setText(numbers);
+        mListener.setResultForDayFragment(result);
     }
 
+    public void setWeights(DefaultHashMap<Integer, Double> weights){
+        this.weights = weights;
+
+    }
+
+
+    public static Subscriber<DefaultHashMap<Integer,Double>> getObserver(){
+
+        return new Subscriber<DefaultHashMap<Integer, Double>>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+
+            }
+
+            @Override
+            public void onNext(DefaultHashMap<Integer, Double> integerDoubleDefaultHashMap) {
+                weights = integerDoubleDefaultHashMap;
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -369,6 +405,8 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
+        void setResultForDayFragment(int[] result);
     }
 
 }

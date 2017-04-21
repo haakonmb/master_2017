@@ -200,7 +200,6 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
                 Log.d(TAG, ""+sb.toString());
                 // Creating a new non-ui thread task to download json data
-
                 mListener.getPlaces(sb.toString());
 //                PlacesTask placesTask = new PlacesTask();
 //
@@ -330,12 +329,70 @@ public class MapFragment extends android.support.v4.app.Fragment {
 
 
     public void setPlaces(String result){
-        ParserTask pt= new ParserTask();
-
-        pt.execute(result);
+//        ParserTask pt= new ParserTask();
+//
+//        pt.execute(result);
+        List<HashMap<String,String>> list = null;
+        list = mListener.parsePlaces(result);
         Log.d(TAG, "Got called by gatherer");
+
+        // Clears all the existing markers
+        mMap.clear();
+        markerID = new HashMap<Marker, String>();
+
+        for(int i=0;i<list.size();i++){
+
+            // Creating a marker
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            // Getting a place from the places list
+            HashMap<String, String> hmPlace = list.get(i);
+
+            // Getting latitude of the place
+            double lat = Double.parseDouble(hmPlace.get("lat"));
+
+            // Getting longitude of the place
+            double lng = Double.parseDouble(hmPlace.get("lng"));
+
+            // Getting name
+            String name = hmPlace.get("place_name");
+
+            // Getting vicinity
+            String vicinity = hmPlace.get("vicinity");
+//                String icon = hmPlace.get("icon");
+//                try{
+//
+//                    URL url = new URL(icon);
+//                    Bitmap image = BitmapFactory.decodeStream(url.openStream());
+//                    BitmapDescriptor bmd = BitmapDescriptorFactory.fromBitmap(image);
+//                    markerOptions.icon(bmd);
+//                }
+//                catch (Exception e){
+//                    Log.d(TAG, ""+e);
+//                }
+//
+//                Log.d(TAG,""+icon);
+
+            LatLng latLng = new LatLng(lat, lng);
+
+            markerOptions.snippet("test");
+            //markerOptions.icon(icon);
+
+            // Setting the position for the marker
+            markerOptions.position(latLng);
+
+            // Setting the title for the marker.
+            //This will be displayed on taping the marker
+            markerOptions.title(name + " : " + vicinity);
+
+            // Placing a marker on the touched position
+            Marker mark = mMap.addMarker(markerOptions);
+            markerID.put(mark, hmPlace.get("place_id"));
+
+        }
     }
 
+    //TODO: Fix. wtf myself? Use-case?
     public void presentDetails(String result) {
         mListener.presentDetails(result);
     }
@@ -362,93 +419,13 @@ public class MapFragment extends android.support.v4.app.Fragment {
         void placeDetails(String s);
 
         void presentDetails(String result);
+
+        List<HashMap<String,String>> parsePlaces(String result);
     }
 
     //TODO: move to just using JSONObject as hashmap directly instead of needlessly making one yourself.
     /** A class to parse the Google Places in JSON format */
-    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
 
-        JSONObject jObject;
-
-        // Invoked by execute() method of this object
-        @Override
-        protected List<HashMap<String,String>> doInBackground(String... jsonData) {
-
-            List<HashMap<String, String>> places = null;
-            PlaceJSONParser placeJsonParser = new PlaceJSONParser();
-
-            try{
-                jObject = new JSONObject(jsonData[0]);
-
-                /** Getting the parsed data as a List construct */
-                places = placeJsonParser.parse(jObject);
-
-            }catch(Exception e){
-                Log.d("Exception",e.toString());
-            }
-            return places;
-        }
-
-        // Executed after the complete execution of doInBackground() method
-        @Override
-        protected void onPostExecute(List<HashMap<String,String>> list){
-
-            // Clears all the existing markers
-            mMap.clear();
-            markerID = new HashMap<Marker, String>();
-
-            for(int i=0;i<list.size();i++){
-
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
-
-                // Getting a place from the places list
-                HashMap<String, String> hmPlace = list.get(i);
-
-                // Getting latitude of the place
-                double lat = Double.parseDouble(hmPlace.get("lat"));
-
-                // Getting longitude of the place
-                double lng = Double.parseDouble(hmPlace.get("lng"));
-
-                // Getting name
-                String name = hmPlace.get("place_name");
-
-                // Getting vicinity
-                String vicinity = hmPlace.get("vicinity");
-//                String icon = hmPlace.get("icon");
-//                try{
-//
-//                    URL url = new URL(icon);
-//                    Bitmap image = BitmapFactory.decodeStream(url.openStream());
-//                    BitmapDescriptor bmd = BitmapDescriptorFactory.fromBitmap(image);
-//                    markerOptions.icon(bmd);
-//                }
-//                catch (Exception e){
-//                    Log.d(TAG, ""+e);
-//                }
-//
-//                Log.d(TAG,""+icon);
-
-                LatLng latLng = new LatLng(lat, lng);
-
-                markerOptions.snippet("test");
-                //markerOptions.icon(icon);
-
-                // Setting the position for the marker
-                markerOptions.position(latLng);
-
-                // Setting the title for the marker.
-                //This will be displayed on taping the marker
-                markerOptions.title(name + " : " + vicinity);
-
-                // Placing a marker on the touched position
-                Marker mark = mMap.addMarker(markerOptions);
-                markerID.put(mark, hmPlace.get("place_id"));
-
-            }
-        }
-    }
 
 
 }

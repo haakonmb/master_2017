@@ -11,7 +11,7 @@ public class Question {
     String answer ="N/A";
     int optionNum = -1;
     int[] tags;
-
+//    int answerOption = 0;
 
 
     public Question(){
@@ -49,5 +49,13 @@ public class Question {
         return option;
     }
 
+    public int getOptionNum(){
+        return optionNum;
+    }
 
+    public DecisionConstraint generateConstraint() {
+
+        //TODO: fix so it actually generates constraints
+        return null;
+    }
 }

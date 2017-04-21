@@ -24,16 +24,35 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Observable;
 import mordbad.master.data.Gatherer;
+import mordbad.master.dss.PersonModel;
+import mordbad.master.dss.Probabilitator;
 import mordbad.master.dss.Reasoner;
 import mordbad.master.dss.Wish;
 
-public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+//import static com.activeandroid.Cache.getContext;
+//import com.activeandroid.*;
+
+public class MainActivity extends AppCompatActivity implements PreferenceFragment.OnFragmentInteractionListener,Gatherer.OnGathererInteractionListener, TourFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, DayFragment.OnFragmentInteractionListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     String TAG = "mainactivity";
 
@@ -44,12 +63,13 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
     //private Reasoner reasoner;
-    private String[] events = null;
+    private String[] events ;
     private Wish wish;
 
     //Init Decision support system parts
-    private Gatherer gatherer = null;
-    private Reasoner reasoner = null;
+    private Gatherer gatherer;
+    public Reasoner reasoner;
+    Map<String, Double[]> lookup_probability;
 
 
     //fragments ohoy!
@@ -57,9 +77,10 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     PreferenceFragment prefFragment;
     TourFragment tourFragment;
     MapFragment mapFragment;
+    DayFragment dayFragment;
 
     //apiclient for location services
-    GoogleApiClient mGoogleApiClient = null;
+    GoogleApiClient mGoogleApiClient ;
 
 
     String[] activites = {"Arts & Culture", "Business", "Community", "Education",};
@@ -70,10 +91,15 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     private TextView mLongitudeText;
 
 
+
     private int permissionFine;
     private int permissionCoarse;
     private String[] permissions;
     private int requestCode;
+    public Observable<Map<Integer,Double>> data_adjusted_probabilities;
+    public Probabilitator adjustedProbabilities;
+    private Double[] priors_from_data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +107,14 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         setContentView(R.layout.activity_main);
 
 
+//        Configuration.Builder configurationBuilder
+//        ActiveAndroid.initialize(this);
+        loadDataFromAsset();
         //Proper init of DSS
         reasoner = new Reasoner();
         gatherer = new Gatherer();
+
+        gatherer.setup(this);
 
 
         //Check for permissions
@@ -93,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         permissionCoarse = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        Log.d(TAG,""+permissionFine);
+        Log.d(TAG,"finePermission == "+permissionFine);
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -122,7 +153,10 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
             tourFragment = new TourFragment();
             mapFragment = new MapFragment();
             prefFragment = new PreferenceFragment();
-            gatherer.setup(mapFragment);
+            dayFragment = new DayFragment();
+
+            //gir gatherer callback-mulighet
+
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             // firstFragment.setArguments(getIntent().getExtras());
@@ -151,12 +185,46 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
 
 
-        Log.d(TAG, "test");
+    }
+
+    private void loadDataFromAsset() {
+//        ActiveAndroid.beginTransaction();
+        String cvsSplitBy = ",";
+       lookup_probability = new HashMap<>();
+
+        String[] apriori = getResources().getStringArray(R.array.apriori);
+        String[] evidence = getResources().getStringArray(R.array.postpriori);
+        Double[] apriori_double= new Double[11]               ;
+
+        for(int i=0; i< apriori.length; i++){
+            apriori_double[i] = Double.parseDouble( apriori[i]);
+
+        }
+
+        for(String s: evidence){
+            String[] data = s.split(cvsSplitBy);
+            String key = data[0] + data[1];
+
+
+            List<Double> tmp = new ArrayList<>();
+            for(int i = 2; i < data.length; i++){
+                tmp.add(Double.parseDouble(data[i]));
+
+            }
+
+
+//              Making the value into an array of the correct type and size automagically
+            lookup_probability.put(key,tmp.toArray(new Double[tmp.size()]));
+        }
+
+        priors_from_data = apriori_double;
+
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        setupDrawer();
         mDrawerToggle.syncState();
 
 
@@ -235,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     private void addDrawerItems() {
-        String[] drawerItems = {"LevelTest", "Tour", "Map", "LevelTest"};
+        String[] drawerItems = {"LevelTest", "Activities", "Map", "Day"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
         mDrawerList.setAdapter(mAdapter);
     }
@@ -243,6 +311,16 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void setResultForDayFragment(int[] result) {
+        dayFragment.setResult(result);
+    }
+
+    @Override
+    public void gathererTest() {
+        gatherer.gather();
     }
 
     @Override
@@ -285,15 +363,28 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     @Override
+    public List<HashMap<String, String>> parsePlaces(String result) {
+        return gatherer.parsePlaces(result);
+    }
+
+    @Override
     public void passPreference(Wish wish) {
         //send wish to the recommender for processing
         this.wish = wish;
-        events = reasoner.getEvents(wish);
         //TODO Change to loading screen while processing
         //
 
 
         //TODO Then change to tourfragment when you get input from Reasoner
+    }
+
+    @Override
+    public void startActivityEvaluation(int[] dataFromQuestions) {
+        adjustedProbabilities = new Probabilitator(priors_from_data, lookup_probability, dataFromQuestions);
+        data_adjusted_probabilities = Observable.just(adjustedProbabilities.map_activities_to_probability_for_yes);
+//                .subscribe(TourFragment.getObserver());
+        TourFragment.setProbabilitator(adjustedProbabilities);
+
     }
 
     @Override
@@ -339,6 +430,11 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     }
 
+    @Override
+    public void finished(String result) {
+        Log.d(TAG, "Ive been callbacked");
+    }
+
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -368,8 +464,8 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                 mapFragment.SetLocation(mLastLocation);
                 break;
 
-            case 4:
-
+            case 3:
+                fragment = dayFragment;
                 break;
 
             default:
