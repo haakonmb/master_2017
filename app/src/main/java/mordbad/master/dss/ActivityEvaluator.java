@@ -15,6 +15,8 @@ import java.util.List;
     private int[] data;
     private DefaultHashMap<Integer, Double> weights;
 
+    private DecisionConstraint<int[]>[] constraints = ActivityProblem.constraints;
+
 
     public ActivityEvaluator(int length, int[] dataFromQuestions){
         this.length = length;
@@ -61,7 +63,14 @@ import java.util.List;
     }
 
     private double constraintFulfillment(int[] ints) {
-        return 0;
+        double result =100;
+        for(DecisionConstraint<int[]> constraint : constraints){
+            result =  result * constraint.constraint(ints);
+
+
+
+        }
+        return result;
     }
 
     @Override
