@@ -10,11 +10,10 @@ import java.util.List;
  */
 
 class DayEvaluator implements FitnessEvaluator<HashMap<String,String>[]> {
-    private DecisionConstraint[] decisionConstraint;
+    private DecisionConstraint[] decisionConstraint = DayProblem.constraints;
 
 
-    public DayEvaluator(DecisionConstraint[] decisionConstraint){
-        this.decisionConstraint = decisionConstraint;
+    public DayEvaluator(){
 
     }
 

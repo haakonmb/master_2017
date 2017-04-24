@@ -221,23 +221,9 @@ public class Reasoner {
         //stuff for evolutionengine
         DayFactory dayFactory = new DayFactory(allofit,activities.length);
 
-
-        //TODO: get actual constraints
-        DecisionConstraint test = new DecisionConstraint() {
-            @Override
-            public double constraint(HashMap[] assignment) {
-                return 1;
-            }
-
-            @Override
-            public double constraint(Object assignment) {
-                return 0;
-            }
-        };
-        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator(new DecisionConstraint[]{test});
+        FitnessEvaluator<HashMap<String,String>[]> dayEvaluator = new DayEvaluator();
 
         EvolutionaryOperator hashArrayCrossover = new ObjectArrayCrossover<HashMap<String,String>>();
-
 
         SelectionStrategy<Object> selection = new RouletteWheelSelection();
         Random rng = new MersenneTwisterRNG();
