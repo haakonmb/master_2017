@@ -24,5 +24,8 @@ public class TouristEnums {
     public static int[] lokal_kultur = {3, 4, 22, 23, 26, 32, 33, 21, 48, 55, 59, 60, 62, 71, 74, 78, 82, 86, 87, 89};
     public static int[] restaurant = {6, 8, 14, 53, 54, 71};
 
+    public static int[] food = {6,14,54,71 };
+
     public static int[][] all_maps = { lokal_mat,shoppe,historiske,slappe_av,teater,kunst_museum,moro,lokal_historie,sightseeing,lokal_kultur,restaurant};
+
 }
