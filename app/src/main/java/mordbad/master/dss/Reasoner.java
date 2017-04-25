@@ -132,7 +132,7 @@ public class Reasoner {
      */
     public int[] getCategories(int population){
 
-        return engine.evolve(population,0, new ElapsedTime(5000));
+        return engine.evolve(population,0, new ElapsedTime(15000));
     }
 
 
