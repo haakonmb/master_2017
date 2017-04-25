@@ -49,10 +49,16 @@ public class ActivityProblem{
 
         @Override
         public double constraint(int[] assignment) {
+            for(int i: assignment){
+                if(contains(TouristEnums.food, i)){
+                    return 1.0;
+
+                }
+
+            }
 
 
-
-            return 0;
+            return 0.0;
         }
     };
 
