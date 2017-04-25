@@ -47,13 +47,16 @@ public class Probabilitator {
 
     private void calculateProbabilities() {
         ArrayList<Double[]> everything = new ArrayList<>();
-//        everything.add(prior_probabilities);
+
+        //Hent ut sansynligheten for ja for alle aktivitetene for hvert datapunkt. Ie, få arrayet som tilsvarer sansynlighet for ja på alle aktiviteter gitt eksempelvis alder = 18-30 og putt dette arrayet i everything.
+        //Oppsummert: hent ut de relevante sansynlighetene for personen som bruker appen og samle de i everything.
         for(int i = 0; i < data.length; i++){
 
             String key = Integer.toString(i+1) + Integer.toString(data[i]);
             everything.add(evidence_probabilities.get(key));
 
         }
+        //Finn ut hvordan disse sansynligehetene forandrer priors når vi har en gitt variabel-verdi.
         for(int i =0 ;i < prior_probabilities.length; i++){
             double result = prior_probabilities[i];
 
