@@ -13,10 +13,35 @@ public class ReasonerTest {
     @Test
     public void getCategories() throws Exception {
         int[] result = reasoner.getCategories(50,5000);
+
+//        for(int i: TouristEnums.slappe_av){
+//
+//        System.out.println(           Data.place_candidates[i]);
+//            System.out.println();
+//        }
+        int index = 0;
+
+        for(int i = 0; i < Data.probabilitator.probabilities_scaled.length; i++){
+            if(Data.probabilitator.probabilities_scaled[i] > 0.8){
+                index = i;
+            }
+
+        }
+//        Data.probabilitator.probabilities_scaled
+
+
+        System.out.println("Index:" + index);
+        for(int i: TouristEnums.all_maps[index]){
+            System.out.println(Data.place_candidates[i]);
+        }
+
+        System.out.println();
         for(int i: result){
             System.out.println(Data.place_candidates[i]);
 
         }
+
+
     }
 
     @Test

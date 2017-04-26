@@ -16,7 +16,7 @@ public class Probabilitator {
     public double[] probabilities = new double[11];
     private Double[] probabilities_object = new Double[11];
     public Double[] probabilities_scaled = new Double[11];
-    public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(0.0);
+    public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(-0.5);
 
 
     public Probabilitator(Double[] priors, Map<String,Double[]> evidence, int[] data){
@@ -37,9 +37,9 @@ public class Probabilitator {
 
         //Set the highest to 1 and scale the rest accordingly to diff between them and 1
         scaleNumbers(sortedIndex);
-        for(int i = sortedIndex.length-1 ; i> -1; i--){
-            System.out.println("Sorted " +probabilities_scaled[sortedIndex[i]]);
-        }
+//        for(int i = sortedIndex.length-1 ; i> -1; i--){
+//            System.out.println("Sorted " +probabilities_scaled[sortedIndex[i]]);
+//        }
 
 
     }
