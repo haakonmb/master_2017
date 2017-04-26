@@ -128,11 +128,12 @@ public class Reasoner {
      * Gets the categories of activities we recommend.
      *
      * @param population
+     * @param timeToBreak
      * @return
      */
-    public int[] getCategories(int population){
+    public int[] getCategories(int population, int timeToBreak){
 
-        return engine.evolve(population,0, new ElapsedTime(15000));
+        return engine.evolve(population,0, new ElapsedTime(timeToBreak));
     }
 
 

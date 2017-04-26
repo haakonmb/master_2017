@@ -19,8 +19,6 @@ import org.json.JSONObject;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.Observer;
-
 import mordbad.master.dss.DefaultHashMap;
 import mordbad.master.dss.Probabilitator;
 import mordbad.master.dss.Reasoner;
@@ -343,7 +341,7 @@ public class TourFragment extends android.support.v4.app.Fragment implements But
 
         Log.d(TAG, "gen :" + gen );
         //TODO: move getCategories out of the print-function and into its own method for clarity of functionality.
-        int[] result = mReasoner.getCategories(gen);
+        int[] result = mReasoner.getCategories(gen, 5000);
 //        result = mReasoner.getCategories(gen);
 
         StringBuilder build = new StringBuilder();
