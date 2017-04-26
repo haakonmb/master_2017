@@ -53,22 +53,30 @@ import java.util.List;
     }
 
     private double baseCaseFulfillment(int[] ints) {
-        double score = 0;
+        double score = 5;
 
         for(int i: ints){
            score = score + weights.get(i);
 
         }
+
+        if(score < 0.0){
+            score = 0.0;
+        }
         return score;
     }
 
     private double constraintFulfillment(int[] ints) {
-        double result =0;
+        double result =5;
         for(DecisionConstraint<int[]> constraint : constraints){
             result =  result + constraint.constraint(ints);
 
 
 
+        }
+
+        if(result < 0.0){
+            result = 0.0;
         }
         return result;
     }
