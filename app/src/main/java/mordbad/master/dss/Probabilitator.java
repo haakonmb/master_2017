@@ -1,6 +1,8 @@
 package mordbad.master.dss;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ public class Probabilitator {
     Map<String, Double[]> evidence_probabilities;
     int[] data;
     public double[] probabilities = new double[11];
+    private Double[] probabilities_object = new Double[11];
     public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(0.0);
 
 
@@ -28,6 +31,28 @@ public class Probabilitator {
 
     private void normalizeProbabilites() {
         //TODO: implement normalization so things arent out of wack.
+
+        //get the highest numbers
+        Integer[] sortedIndex    =    getSortedIndexOfHighestNumber();
+
+        //Set the highest to 1 and scale the rest accordingly to diff between them and 1
+        scaleNumbers();
+
+
+    }
+
+    private void scaleNumbers() {
+
+    }
+
+    private Integer[] getSortedIndexOfHighestNumber() {
+        ArrayIndexComparator comparator = new ArrayIndexComparator(probabilities_object);
+        Integer[] index = comparator.createIndexArray();
+
+        Arrays.sort(index,comparator);
+
+
+        return index;
     }
 
     private void convertProbabilitesToPositions() {
@@ -65,9 +90,38 @@ public class Probabilitator {
             }
 
             probabilities[i] = result;
+            probabilities_object[i] = result;
         }
 
 
+    }
+
+
+    public class ArrayIndexComparator implements Comparator<Integer>
+    {
+        private final Double[] array;
+
+        public ArrayIndexComparator(Double[] array)
+        {
+            this.array = array;
+        }
+
+        public Integer[] createIndexArray()
+        {
+            Integer[] indexes = new Integer[array.length];
+            for (int i = 0; i < array.length; i++)
+            {
+                indexes[i] = i; // Autoboxing
+            }
+            return indexes;
+        }
+
+        @Override
+        public int compare(Integer index1, Integer index2)
+        {
+            // Autounbox from Integer to int to use as array indexes
+            return array[index1].compareTo(array[index2]);
+        }
     }
 
 

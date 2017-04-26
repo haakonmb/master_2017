@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public class ProbabilitatorTest {
 
-
+    Probabilitator probabilitator = Data.probabilitator;
 
 
     @Before
@@ -31,11 +31,16 @@ public class ProbabilitatorTest {
     @Test
     public void checkProbabilities() throws Exception {
 
-        Probabilitator probabilitator =  Data.probabilitator;
         for(double d : probabilitator.probabilities){
 
             System.out.println(d);
         }
+
+    }
+
+    @Test
+    public void getSortedIndexOfHighestNumber() throws Exception{
+
 
     }
 

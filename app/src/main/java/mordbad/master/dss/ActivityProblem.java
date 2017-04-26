@@ -62,8 +62,49 @@ public class ActivityProblem{
         }
     };
 
+    //No repeats
+    final static DecisionConstraint<int[]> constraint3 = new DecisionConstraint<int[]>() {
+        @Override
+        public double constraint(HashMap<String, String>[] assignment) {
+            return 0;
+        }
+
+        @Override
+        public double constraint(int[] assignment) {
+            double counter = 0;
+
+            for(int i : assignment){
+                if(contains(assignment, i)){
+                    counter ++;
+
+                }
+
+            }
+
+            if(counter > 1){
+               counter = counter * -1;
+               return counter;
+            }
+
+            return 0;
+        }
+    };
+
+
+    //Penalize non-interesting activities
+    final static DecisionConstraint<int[]> constraint4 = new DecisionConstraint<int[]>() {
+        @Override
+        public double constraint(HashMap<String, String>[] assignment) {
+            return 0;
+        }
+
+        @Override
+        public double constraint(int[] assignment) {
+            return 0;
+        }
+    };
 
     //Add new constraints here.
-    final static DecisionConstraint<int[]>[] constraints = new DecisionConstraint[] {constraint1, constraint2};
+    final static DecisionConstraint<int[]>[] constraints = new DecisionConstraint[] {constraint1, constraint2,constraint3,constraint4};
 
 }
