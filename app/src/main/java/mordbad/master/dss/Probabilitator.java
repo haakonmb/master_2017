@@ -3,7 +3,6 @@ package mordbad.master.dss;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,6 +15,7 @@ public class Probabilitator {
     int[] data;
     public double[] probabilities = new double[11];
     private Double[] probabilities_object = new Double[11];
+    public Double[] probabilities_scaled = new Double[11];
     public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(0.0);
 
 
@@ -33,24 +33,46 @@ public class Probabilitator {
         //TODO: implement normalization so things arent out of wack.
 
         //get the highest numbers
-        Integer[] sortedIndex    =    getSortedIndexOfHighestNumber();
+        Integer[] sortedIndex    =    getSortedIndexOfProbabilities();
 
         //Set the highest to 1 and scale the rest accordingly to diff between them and 1
-        scaleNumbers();
+        scaleNumbers(sortedIndex);
+        for(int i = sortedIndex.length-1 ; i> -1; i--){
+            System.out.println("Sorted " +probabilities_scaled[sortedIndex[i]]);
+        }
 
 
     }
 
-    private void scaleNumbers() {
+    private void scaleNumbers(Integer[] sortedIndex) {
+
+        //Om vi skal sette høyeste verdi til 0.9 må vi finne et tall å skalere den med.
+        //(maks / x = 0.9) == (x = maks / 0.9)
+
+        //angi maks på skalaen
+        double highestScale = 0.9;
+
+        double scaleAdjuster = 0.1 - probabilities[sortedIndex[0]];
+        //finn skalaraen
+        double scaleFactor = highestScale/probabilities[sortedIndex[sortedIndex.length-1]];
+
+        System.out.println("Scaleadjuster" + scaleAdjuster);
+        //Bruk den på alle variablene
+        for(int i =0 ; i < probabilities_object.length; i++){
+
+            probabilities_scaled[i] = probabilities_object[i] * scaleFactor;
+            probabilities_scaled[i] = probabilities_scaled[i] + scaleAdjuster;
+        }
+
 
     }
 
-    private Integer[] getSortedIndexOfHighestNumber() {
+    private Integer[] getSortedIndexOfProbabilities() {
         ArrayIndexComparator comparator = new ArrayIndexComparator(probabilities_object);
         Integer[] index = comparator.createIndexArray();
 
         Arrays.sort(index,comparator);
-
+//        Arrays.
 
         return index;
     }
