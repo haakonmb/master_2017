@@ -1,10 +1,20 @@
 package mordbad.master.dss;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by haakon on 25/04/17.
  */
 
 class Data {
+
+
+    static  HashMap<String, Double[]> lookup_probability;
+    static    Double[] priors_from_data = new Double[11];
+    static int[] stats = {1,1,1,1,1,1};
+
 
     public static         String[] apriori = {
             "0.480848369737259",
@@ -47,4 +57,150 @@ public static    String[] evidence =       {
             "6,5,0.525,0.3375,0.53125,0.61875,1,0.25625,0.51875,0.175,0.33125,0.2375,0.4125",
             "6,6,0.625,0.25,0.625,0.625,1,0.375,0.375,0.25,0.25,0.25,0.625"};
 
+
+  public static  String[] place_candidates = {
+            "accounting",
+            "airport",
+            "amusement_park",
+            "aquarium",
+            "art_gallery",
+            "atm",
+            "bakery",
+            "bank",
+            "bar",
+            "beauty_salon",
+            "bicycle_store",
+            "book_store",
+            "bowling_alley",
+            "bus_station",
+            "cafe",
+            "campground",
+            "car_dealer",
+            "car_rental",
+            "car_repair",
+            "car_wash",
+            "casino",
+            "cemetery",
+            "church",
+            "city_hall",
+            "clothing_store",
+            "convenience_store",
+            "courthouse",
+            "dentist",
+            "department_store",
+            "doctor",
+            "electrician",
+            "electronics_store",
+            "embassy",
+            "fire_station",
+            "florist",
+            "funeral_home",
+            "furniture_store",
+            "gas_station",
+            "gym",
+            "hair_care",
+            "hardware_store",
+            "hindu_temple",
+            "home_goods_store",
+            "hospital",
+            "insurance_agency",
+            "jewelry_store",
+            "laundry",
+            "lawyer",
+            "library",
+            "liquor_store",
+            "local_government_office",
+            "locksmith",
+            "lodging",
+            "meal_delivery",
+            "meal_takeaway",
+            "mosque",
+            "movie_rental",
+            "movie_theater",
+            "moving_company",
+            "museum",
+            "night_club",
+            "painter",
+            "park",
+            "parking",
+            "pet_store",
+            "pharmacy",
+            "physiotherapist",
+            "plumber",
+            "police",
+            "post_office",
+            "real_estate_agency",
+            "restaurant",
+            "roofing_contractor",
+            "rv_park",
+            "school",
+            "shoe_store",
+            "shopping_mall",
+            "spa",
+            "stadium",
+            "storage",
+            "store",
+            "subway_station",
+            "synagogue",
+            "taxi_stand",
+            "train_station",
+            "transit_station",
+            "travel_agency",
+            "university",
+            "veterinary_care",
+            "zoo"
+    };
+    public static Probabilitator probabilitator = generateProbabilitator(stats);
+
+
+    private static void loadDataFromAsset() {
+
+//        int[] stats = {1,1,2,1,1,1};
+
+//        ActiveAndroid.beginTransaction();
+        String cvsSplitBy = ",";
+        lookup_probability = new HashMap<>();
+        // priors_from_data = new Double[11];
+
+        String[] apriori = Data.apriori;
+
+        String[] evidence = Data.evidence;
+
+
+        Double[] apriori_double= new Double[11]               ;
+
+        for(int i=0; i< apriori.length; i++){
+            apriori_double[i] = Double.parseDouble( apriori[i]);
+//            System.out.println(apriori_double[i]);
+
+        }
+
+        for(String s: evidence){
+            String[] data = s.split(cvsSplitBy);
+            String key = data[0] + data[1];
+
+
+            List<Double> tmp = new ArrayList<>();
+            for(int i = 2; i < data.length; i++){
+                tmp.add(Double.parseDouble(data[i]));
+
+            }
+
+
+//              Making the value into an array of the correct type and size automagically and putting it in the hashmap
+            lookup_probability.put(key,tmp.toArray(new Double[tmp.size()]));
+        }
+
+        priors_from_data = apriori_double;
+
+    }
+
+
+    //if you want a probabilitator based on different demographic data, run this. Note that it changes the default Probabilitator and then returns it.
+    public static Probabilitator generateProbabilitator(int[] newstats){
+        stats = newstats;
+        loadDataFromAsset();
+        probabilitator = new Probabilitator(priors_from_data,lookup_probability,stats);
+        return probabilitator;
+    }
 }
