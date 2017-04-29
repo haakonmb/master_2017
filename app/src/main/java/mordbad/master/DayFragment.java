@@ -137,10 +137,15 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
 
                     view1.setText(result[0].get(PlaceJSONParser.strings.place_name.toString()));
+                    view1.setTag(result[0]);
                     view2.setText(result[1].get(PlaceJSONParser.strings.place_name.toString()));
+                    view2.setTag(result[1]);
                     view3.setText(result[2].get(PlaceJSONParser.strings.place_name.toString()));
+                    view3.setTag(result[2]);
                     view4.setText(result[3].get(PlaceJSONParser.strings.place_name.toString()));
+                    view4.setTag(result[3]);
                     view5.setText(result[4].get(PlaceJSONParser.strings.place_name.toString()));
+                    view5.setTag(result[4]);
 
                     Log.d(TAG,""
                             + result[0] + "\n"
@@ -210,10 +215,26 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
             case(R.id.startTheApocalypse):
                 Log.d(TAG,"I Got Pressed :O");
                 reasoner.setSubscriber(subscriber);
-               reasoner.getActivities(200,activities,mListener.getLocation());
+               reasoner.getActivities(100,activities,mListener.getLocation());
 //                view1.setText(result[0].get(1).);a
                 break;
 
+
+            case(R.id.textView7):
+
+                break;
+            case(R.id.textView8):
+
+                break;
+            case(R.id.textView9):
+
+                break;
+            case(R.id.textView10):
+
+                break;
+            case(R.id.textView11):
+
+                break;
 
         }
     }
