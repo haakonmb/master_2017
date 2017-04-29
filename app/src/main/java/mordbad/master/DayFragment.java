@@ -215,7 +215,10 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
             case(R.id.startTheApocalypse):
                 Log.d(TAG,"I Got Pressed :O");
                 reasoner.setSubscriber(subscriber);
-               reasoner.getActivities(100,activities,mListener.getLocation());
+                int population = 100;
+                int timeToBreak = 5000;
+
+                reasoner.getActivities(population,reasoner.getCategories(population,timeToBreak),mListener.getLocation());
 //                view1.setText(result[0].get(1).);a
                 break;
 
