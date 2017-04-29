@@ -385,12 +385,10 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 //                .subscribe(TourFragment.getObserver());
 
         double[] probabibs = adjustedProbabilities.probabilities;
-        for(double d: probabibs){
-
-            Log.d(TAG,":"+d);
-        }
-
+        Observable<Probabilitator> obs= prefFragment.getObservable()
+                .map((ints) -> Observable.just( new Probabilitator(priors_from_data,lookup_probability, (int[]) ints)));
         TourFragment.setProbabilitator(adjustedProbabilities);
+        obs.subscribe(dayFragment.getObserver());
 
     }
 

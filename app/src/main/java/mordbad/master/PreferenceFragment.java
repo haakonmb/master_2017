@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import io.reactivex.Observable;
 import mordbad.master.dss.Question;
 import mordbad.master.dss.Wish;
 
@@ -39,7 +40,6 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
 
     private OnFragmentInteractionListener mListener;
 
-    private Wish wish = new Wish();
     private Question[] questions ;
     private int currentQNum =0;
     private String currentQ;
@@ -54,6 +54,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     private boolean questionareDone = false;
     private boolean showingAnswer = false;
     private int[] dataFromQuestions;
+    public Observable<int[]> observable;
 
     /**
      * Use this factory method to create a new instance of
@@ -264,6 +265,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
             mNext.setVisibility(Button.INVISIBLE);
 
             showingAnswer = true;
+            observable = Observable.just(dataFromQuestions);
             mListener.startActivityEvaluation(dataFromQuestions);
 
         }
@@ -294,6 +296,12 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
         //toggleVisibility(questionareDone);
 
 
+    }
+
+
+    public Observable getObservable(){
+
+        return observable;
     }
 
     //TODO: needs debug for use-cases. THings not visible

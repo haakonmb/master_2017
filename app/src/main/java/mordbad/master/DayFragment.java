@@ -22,6 +22,7 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import mordbad.master.data.PlaceJSONParser;
+import mordbad.master.dss.Probabilitator;
 import mordbad.master.dss.Reasoner;
 
 
@@ -61,6 +62,8 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
     private Observer<HashMap<String,String>[]> subscriber;
     private HashMap<String,String>[] result;
     private TextView maplink;
+    Probabilitator probabilitator;
+    private String[] place_types = getResources().getStringArray(R.array.all_place_types);
 
     public DayFragment() {
         // Required empty public constructor
@@ -164,7 +167,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         };
 
         //Instantiate the reasoner and give it access to the canonical array of place types so that the fragment and the reasoner are sure to talk about the same kinds of places
-        reasoner = new Reasoner(getResources().getStringArray(R.array.all_place_types));
+        reasoner = new Reasoner(place_types);
 
         return view;
     }
@@ -184,6 +187,31 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         Log.d(TAG,stringBuilder.toString());
 
     }
+
+    public Observer<Probabilitator> getObserver(){
+       return new Observer<Probabilitator>() {
+           @Override
+           public void onSubscribe(Disposable d) {
+
+           }
+
+           @Override
+           public void onNext(Probabilitator prob) {
+                probabilitator = prob;
+           }
+
+           @Override
+           public void onError(Throwable e) {
+
+           }
+
+           @Override
+           public void onComplete() {
+                reasoner = new Reasoner(place_types,probabilitator.map_activities_to_probability_for_yes);
+           }
+       };
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
