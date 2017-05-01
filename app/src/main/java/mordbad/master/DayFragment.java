@@ -23,7 +23,7 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import mordbad.master.data.PlaceJSONParser;
-import mordbad.master.dss.Data;
+import mordbad.master.dss.CheatData;
 import mordbad.master.dss.Probabilitator;
 import mordbad.master.dss.Reasoner;
 
@@ -190,30 +190,6 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
     }
 
-    public Observer<Probabilitator> getObserver(){
-       return new Observer<Probabilitator>() {
-           @Override
-           public void onSubscribe(Disposable d) {
-
-           }
-
-           @Override
-           public void onNext(Probabilitator prob) {
-                probabilitator = prob;
-           }
-
-           @Override
-           public void onError(Throwable e) {
-
-           }
-
-           @Override
-           public void onComplete() {
-                reasoner = new Reasoner(Data.place_candidates,probabilitator.map_activities_to_probability_for_yes);
-           }
-       };
-    }
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -275,6 +251,11 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
     public void setResult(int[] result) {
         this.activities = result;
+    }
+
+    public void setProbabilitator(Probabilitator adjustedProbabilities) {
+        probabilitator = adjustedProbabilities;
+        reasoner = new Reasoner(place_types,probabilitator.map_activities_to_probability_for_yes);
     }
 
     /**

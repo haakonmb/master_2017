@@ -299,12 +299,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     }
 
 
-    public Observable<int[]> getObservable(){
-
-        return observable;
-    }
-
-    //TODO: needs debug for use-cases. THings not visible
+     //TODO: needs debug for use-cases. THings not visible
     //Change visibility based on status.
     //True makes questions visible
     //False makes invisible
