@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Place;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -239,24 +241,51 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
 
             case(R.id.textView7):
-                Uri uri = Uri.parse("http://www.google.com"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                makeLinkHappen(view1);
                 break;
             case(R.id.textView8):
-
+                makeLinkHappen(view2);
                 break;
             case(R.id.textView9):
-
+                makeLinkHappen(view3);
                 break;
             case(R.id.textView10):
-
+                makeLinkHappen(view4);
                 break;
             case(R.id.textView11):
-
+                makeLinkHappen(view5);
                 break;
 
         }
+    }
+
+    private void makeLinkHappen(TextView view1) {
+        Uri uri;
+        if(view1.getTag() != null){
+
+            uri = Uri.parse(constructURL(view1.getTag())); // missing 'http://' will cause crashed
+        }
+        else{
+            uri = Uri.parse("https://google.com/maps/place/Current+Location");
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    private String constructURL(Object tag) {
+        HashMap<String,String> hm = (HashMap<String, String>) tag;
+        StringBuilder sb = new StringBuilder();
+        sb.append("https://www.google.com/maps/place/");
+        sb.append(hm.get(PlaceJSONParser.strings.place_name));
+        Log.d(TAG,hm.get(PlaceJSONParser.strings.place_name));
+        sb.append("/@");
+        sb.append(hm.get(PlaceJSONParser.strings.lat));
+        sb.append(",");
+        sb.append(hm.get(PlaceJSONParser.strings.lng));
+        sb.append(",");
+        sb.append("17z/");
+
+        return sb.toString();
     }
 
     public void setResult(int[] result) {
