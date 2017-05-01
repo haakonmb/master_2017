@@ -1,6 +1,7 @@
 package mordbad.master;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -252,7 +253,9 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
 
             case(R.id.textView7):
-
+                Uri uri = Uri.parse("http://www.google.com"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
                 break;
             case(R.id.textView8):
 
