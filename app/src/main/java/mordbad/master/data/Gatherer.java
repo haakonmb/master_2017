@@ -37,7 +37,7 @@ public class Gatherer {
     String[] allPlaceTypes;
 
     MapFragment mapFragment;
-    PlaceJSONParser placeJSONParser = new PlaceJSONParser();
+    protected PlaceJSONParser placeJSONParser = new PlaceJSONParser();
 
     private OnGathererInteractionListener mListener;
     private String api_key = "AIzaSyBDJ5xrcLftFy_VC0ZoRc2j2Jn-oTLPXvc";
@@ -86,7 +86,7 @@ public class Gatherer {
     }
 
 
-    private String exceptionHandlerForDownloadUrl(String s){
+    protected String exceptionHandlerForDownloadUrl(String s){
         String data = "";
         try{
             data = downloadUrl(s);

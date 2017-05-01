@@ -1,5 +1,9 @@
 package mordbad.master.dss;
 
+//import android.location.Location;
+
+import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,10 @@ class Data {
     static  HashMap<String, Double[]> lookup_probability;
     static    Double[] priors_from_data = new Double[11];
     static int[] stats = {1,1,1,1,1,1};
+    static mockLocation location = new mockLocation("");
+
+//    Location location = new Location("");
+//    location.setLatitude();
 
 
     public static         String[] apriori = {
@@ -202,5 +210,26 @@ public static    String[] evidence =       {
         loadDataFromAsset();
         probabilitator = new Probabilitator(priors_from_data,lookup_probability,stats);
         return probabilitator;
+    }
+
+    public static class mockLocation extends Location{
+        double latitude = 60.389097;
+        double longitude =5.324683;
+
+        public mockLocation(String provider) {
+            super(provider);
+
+
+        }
+
+        @Override
+        public double getLatitude() {
+            return latitude;
+        }
+
+        @Override
+        public double getLongitude(){
+            return longitude;
+        }
     }
 }
