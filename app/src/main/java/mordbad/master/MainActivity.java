@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     @Override
     public void startActivityEvaluation(int[] dataFromQuestions) {
+        Log.d(TAG,dataFromQuestions.toString());
         adjustedProbabilities = new Probabilitator(priors_from_data, lookup_probability, dataFromQuestions);
         data_adjusted_probabilities = Observable.just(adjustedProbabilities.map_activities_to_probability_for_yes);
 
@@ -434,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
 
     @Override
     public void finished(String result) {
-        Log.d(TAG, "Ive been callbacked");
+        Log.d(TAG, "Ive been callbacked"+result);
     }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {

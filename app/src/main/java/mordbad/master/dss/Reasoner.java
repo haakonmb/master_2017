@@ -92,7 +92,13 @@ public class Reasoner {
         initiateEvolutionEngine(weights);
     }
 
+    public Reasoner(String[] candidates, DefaultHashMap<Integer,Double> weights, Gatherer gatherer){
+        this.candidates = candidates;
+        length = candidates.length;
+        initiateEvolutionEngine(weights);
+        this.gatherer = gatherer;
 
+    }
 
 
     private void initiateEvolutionEngine(DefaultHashMap<Integer,Double> weights) {
@@ -151,7 +157,7 @@ public class Reasoner {
         List<HashMap<String,String>>[] allofit =new List[activities.length];
         boolean[] finished = new boolean[activities.length];
         allFinished = false;
-        Log.d(TAG, ""+activities.length);
+//        Log.d(TAG, ""+activities.length);
 
         Observable<List<HashMap<String,String>>> observable;
         for(int i =0; i<activities.length; i++){
@@ -167,7 +173,7 @@ public class Reasoner {
 
                 @Override
                 public void onNext(List<HashMap<String, String>> hashMaps) {
-                    Log.d(TAG, "Allofitsize: "+ allofit.length + " iterator nr:" + ii);
+//                    Log.d(TAG, "Allofitsize: "+ allofit.length + " iterator nr:" + ii);
 //                    allofit.ensureCapacity(ii);
 
                     allofit[ii] = hashMaps;
@@ -187,8 +193,8 @@ public class Reasoner {
                 public void onComplete() {
                     if(allFinished){
                         //TODO: should start second-round generation of paths. Extract to own method and call it here for memory-purposes
-                        Log.d(TAG,""+ allofit[0].get(0).get(PlaceJSONParser.strings.place_name.toString()));
-                        Log.d(TAG,"All done");
+//                        Log.d(TAG,""+ allofit[0].get(0).get(PlaceJSONParser.strings.place_name.toString()));
+//                        Log.d(TAG,"All done");
                         allResults = Observable.just(allofit);
                         helperMethodForCallingGenerateDayAndAssigningSubscriber(population, activities, allofit);
 
