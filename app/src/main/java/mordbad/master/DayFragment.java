@@ -116,6 +116,9 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 //        place_types         = getResources().getStringArray(R.array.all_place_types);
         button.setOnClickListener(this);
 
+        TextView[] textviews = {view1,view2,view3,view4,view5};
+        setOnClicks(textviews);
+
         subscriber = new Observer<HashMap<String,String>[]>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -172,6 +175,13 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         reasoner = new Reasoner(place_types);
 
         return view;
+    }
+
+    private void setOnClicks(TextView[] textviews) {
+        for(TextView t: textviews){
+
+            t.setOnClickListener(this);
+        }
     }
 
     private void makeLink() {
