@@ -65,7 +65,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
     private HashMap<String,String>[] result;
     private TextView maplink;
     Probabilitator probabilitator;
-    private String[] place_types;
+    private String[] place_types = CheatData.place_candidates;
 
     public DayFragment() {
         // Required empty public constructor
@@ -113,7 +113,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         view5 = (TextView) view.findViewById(R.id.textView10);
 
         maplink = (TextView) view.findViewById(R.id.textView11);
-        place_types         = getResources().getStringArray(R.array.all_place_types);
+//        place_types         = getResources().getStringArray(R.array.all_place_types);
         button.setOnClickListener(this);
 
         subscriber = new Observer<HashMap<String,String>[]>() {
