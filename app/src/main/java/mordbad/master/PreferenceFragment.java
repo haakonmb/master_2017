@@ -299,7 +299,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
     }
 
 
-    public Observable getObservable(){
+    public Observable<int[]> getObservable(){
 
         return observable;
     }

@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 import io.reactivex.Observable;
 import mordbad.master.data.Gatherer;
@@ -384,9 +385,10 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         data_adjusted_probabilities = Observable.just(adjustedProbabilities.map_activities_to_probability_for_yes);
 //                .subscribe(TourFragment.getObserver());
 
-        double[] probabibs = adjustedProbabilities.probabilities;
-        Observable<Probabilitator> obs= prefFragment.getObservable()
-                .map((ints) -> Observable.just( new Probabilitator(priors_from_data,lookup_probability, (int[]) ints)));
+//        double[] probabibs = adjustedProbabilities.probabilities;
+        Observable obs= prefFragment.getObservable()
+                .map((ints) -> new Probabilitator(priors_from_data,lookup_probability,ints));
+//                .subscribe(dayFragment.getObserver());
         TourFragment.setProbabilitator(adjustedProbabilities);
         obs.subscribe(dayFragment.getObserver());
 
