@@ -280,12 +280,12 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         HashMap<String,String> hm = (HashMap<String, String>) tag;
         StringBuilder sb = new StringBuilder();
         sb.append("https://www.google.com/maps/place/");
-        sb.append(hm.get(PlaceJSONParser.strings.place_name));
-        Log.d(TAG,hm.get(PlaceJSONParser.strings.place_name));
+        sb.append(hm.get(PlaceJSONParser.strings.place_name.toString()));
+        Log.d(TAG,hm.get(PlaceJSONParser.strings.place_name.toString()));
         sb.append("/@");
-        sb.append(hm.get(PlaceJSONParser.strings.lat));
+        sb.append(hm.get(PlaceJSONParser.strings.lat.toString()));
         sb.append(",");
-        sb.append(hm.get(PlaceJSONParser.strings.lng));
+        sb.append(hm.get(PlaceJSONParser.strings.lng.toString()));
         sb.append(",");
         sb.append("17z/");
 
