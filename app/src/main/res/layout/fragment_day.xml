@@ -11,7 +11,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
+        android:text="Forslag 1:"
+        android:onClick="onClick"
+        android:clickable="true"
         android:id="@+id/tulleteksten"/>
 
     <Button
@@ -31,7 +33,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="50dp"
-        android:text="TextView"
+        android:text="Forslag 2:"
         android:onClick="onClick"
         android:clickable="true"/>
 
@@ -42,7 +44,7 @@
         android:layout_alignEnd="@+id/textView7"
         android:layout_below="@+id/textView7"
         android:layout_marginTop="43dp"
-        android:text="TextView"
+        android:text="Forslag 3:"
         android:onClick="onClick"
         android:clickable="true"/>
 
@@ -53,7 +55,7 @@
         android:layout_alignEnd="@+id/textView8"
         android:layout_below="@+id/textView8"
         android:layout_marginTop="36dp"
-        android:text="TextView"
+        android:text="Forslag 4:"
         android:onClick="onClick"
         android:clickable="true"/>
 
@@ -64,7 +66,7 @@
         android:layout_alignEnd="@+id/textView9"
         android:layout_below="@+id/textView9"
         android:layout_marginTop="39dp"
-        android:text="TextView"
+        android:text="Forslag 5:"
         android:onClick="onClick"
         android:clickable="true"/>
 
@@ -75,7 +77,7 @@
         android:layout_alignEnd="@+id/textView10"
         android:layout_below="@+id/textView10"
         android:layout_alignParentStart="true"
-        android:autoLink="web"
+        android:text="Link til sti:"
         android:onClick="onClick"
         android:clickable="true"/>
 

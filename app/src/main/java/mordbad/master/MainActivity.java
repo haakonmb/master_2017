@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     }
 
     private void addDrawerItems() {
-        String[] drawerItems = {"LevelTest", "Activities", "Map", "Day"};
+        String[] drawerItems = {"Spørreundersøkelse", "PRODUSER DAG-forslag"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
         mDrawerList.setAdapter(mAdapter);
     }
@@ -451,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
     //Changing between fragments
     private void selectItem(int position) {
         Log.d(TAG, ""+position);
-        Fragment fragment = null;
+        Fragment fragment = prefFragment;
 
         switch(position){
             case 0:
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
                 break;
 
             case 1:
-                fragment = tourFragment;
+                fragment = dayFragment;
                 break;
 
             case 2:

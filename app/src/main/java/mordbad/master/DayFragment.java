@@ -146,15 +146,15 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
                 try{
 
 
-                    view1.setText(result[0].get(PlaceJSONParser.strings.place_name.toString()));
+                    view1.setText(view1.getText() +result[0].get(PlaceJSONParser.strings.place_name.toString()));
                     view1.setTag(result[0]);
-                    view2.setText(result[1].get(PlaceJSONParser.strings.place_name.toString()));
+                    view2.setText(view2.getText() +result[1].get(PlaceJSONParser.strings.place_name.toString()));
                     view2.setTag(result[1]);
-                    view3.setText(result[2].get(PlaceJSONParser.strings.place_name.toString()));
+                    view3.setText(view3.getText() +result[2].get(PlaceJSONParser.strings.place_name.toString()));
                     view3.setTag(result[2]);
-                    view4.setText(result[3].get(PlaceJSONParser.strings.place_name.toString()));
+                    view4.setText(view4.getText() +result[3].get(PlaceJSONParser.strings.place_name.toString()));
                     view4.setTag(result[3]);
-                    view5.setText(result[4].get(PlaceJSONParser.strings.place_name.toString()));
+                    view5.setText(view5.getText() +result[4].get(PlaceJSONParser.strings.place_name.toString()));
                     view5.setTag(result[4]);
 
                     Log.d(TAG,""
@@ -200,8 +200,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
             stringBuilder.append(place.get(PlaceJSONParser.strings.lng.toString()));
 
         }
-
-        maplink.setText(stringBuilder.toString());
+        maplink.setTag(stringBuilder.toString());
         Log.d(TAG,stringBuilder.toString());
 
     }
@@ -244,20 +243,23 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
                 break;
 
 
-            case(R.id.textView7):
+            case(R.id.tulleteksten):
                 makeLinkHappen(view1);
                 break;
-            case(R.id.textView8):
+            case(R.id.textView7):
                 makeLinkHappen(view2);
                 break;
-            case(R.id.textView9):
+            case(R.id.textView8):
                 makeLinkHappen(view3);
                 break;
-            case(R.id.textView10):
+            case(R.id.textView9):
                 makeLinkHappen(view4);
                 break;
-            case(R.id.textView11):
+            case(R.id.textView10):
                 makeLinkHappen(view5);
+                break;
+            case(R.id.textView11):
+                makeLinkHappen(maplink);
                 break;
 
         }
@@ -265,7 +267,10 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
     private void makeLinkHappen(TextView view1) {
         Uri uri;
-        if(view1.getTag() != null){
+        if(view1.equals(maplink)){
+            uri = Uri.parse(view1.getTag().toString());
+        }
+        else if(view1.getTag() != null){
 
             uri = Uri.parse(constructURL(view1.getTag())); // missing 'http://' will cause crashed
         }
