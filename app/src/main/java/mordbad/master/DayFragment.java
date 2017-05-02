@@ -118,7 +118,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 //        place_types         = getResources().getStringArray(R.array.all_place_types);
         button.setOnClickListener(this);
 
-        TextView[] textviews = {view1,view2,view3,view4,view5};
+        TextView[] textviews = {view1,view2,view3,view4,view5,maplink};
         setOnClicks(textviews);
 
         subscriber = new Observer<HashMap<String,String>[]>() {
@@ -130,7 +130,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
             @Override
             public void onNext(HashMap<String, String>[] hashMaps) {
 
-                view1.setText("Look daddy, Im recieving stuff in: " + TAG);
+//                view1.setText("Look daddy, Im recieving stuff in: " + TAG);
                 result = hashMaps;
 
             }
@@ -146,15 +146,15 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
                 try{
 
 
-                    view1.setText(view1.getText() +result[0].get(PlaceJSONParser.strings.place_name.toString()));
+                    view1.setText( getString(R.string.forslag1)+result[0].get(PlaceJSONParser.strings.place_name.toString()));
                     view1.setTag(result[0]);
-                    view2.setText(view2.getText() +result[1].get(PlaceJSONParser.strings.place_name.toString()));
+                    view2.setText(getString(R.string.forslag2) +result[1].get(PlaceJSONParser.strings.place_name.toString()));
                     view2.setTag(result[1]);
-                    view3.setText(view3.getText() +result[2].get(PlaceJSONParser.strings.place_name.toString()));
+                    view3.setText(getString(R.string.forslag3) +result[2].get(PlaceJSONParser.strings.place_name.toString()));
                     view3.setTag(result[2]);
-                    view4.setText(view4.getText() +result[3].get(PlaceJSONParser.strings.place_name.toString()));
+                    view4.setText(getString(R.string.forslag4) +result[3].get(PlaceJSONParser.strings.place_name.toString()));
                     view4.setTag(result[3]);
-                    view5.setText(view5.getText() +result[4].get(PlaceJSONParser.strings.place_name.toString()));
+                    view5.setText(getString(R.string.forslag5) +result[4].get(PlaceJSONParser.strings.place_name.toString()));
                     view5.setTag(result[4]);
 
                     Log.d(TAG,""
@@ -201,6 +201,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
         }
         maplink.setTag(stringBuilder.toString());
+        maplink.setText(getString(R.string.forslag6));
         Log.d(TAG,stringBuilder.toString());
 
     }
