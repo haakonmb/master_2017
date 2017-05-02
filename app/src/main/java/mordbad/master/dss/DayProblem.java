@@ -54,7 +54,7 @@ public class DayProblem {
         }
         //Burde dette vært i en annen rekkefølge?
         private boolean distanceCheck(double arg1, double arg2) {
-            return ((arg1 > 0.2) && (arg1 > 3*arg2));
+            return ((arg1 > 0.2) && (arg1 > 2*arg2));
         }
 
 

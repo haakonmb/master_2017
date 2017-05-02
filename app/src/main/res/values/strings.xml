@@ -20,7 +20,7 @@
     <string name ="forslag3">Forslag 3:</string>
     <string name ="forslag4">Forslag 4:</string>
     <string name ="forslag5">Forslag 5:</string>
-    <string name ="forslag6">Forslag 1:</string>
+    <string name ="forslag6">CLICK ME FOR PATH</string>
 
     <string-array name = "apriori">
         <item>0.480848369737259</item>
