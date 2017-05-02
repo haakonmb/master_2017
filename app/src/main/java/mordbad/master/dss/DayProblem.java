@@ -1,8 +1,6 @@
 package mordbad.master.dss;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import mordbad.master.data.PlaceJSONParser;
 
@@ -19,47 +17,67 @@ public class DayProblem {
         @Override
         public double constraint(HashMap<String, String>[] assignment) {
             double score = 0;
-            List<double[]> coordinates = new ArrayList<>();
 
-            double[] first = {  Double.parseDouble(assignment[0].get(PlaceJSONParser.strings.lat)),
-                                Double.parseDouble(assignment[0].get(PlaceJSONParser.strings.lng))};
-            coordinates.add(first);
+            double[][] allCoordinates = new double[assignment.length][];
 
-            //finn distansen mellom hvert sted i listen og tidligere steder
-            for(int i = 1; i < assignment.length-1 ; i++){
-                double[] candidate = {  Double.parseDouble(assignment[i].get(PlaceJSONParser.strings.lat)),
-                                        Double.parseDouble(assignment[i].get(PlaceJSONParser.strings.lng))};
+            for(int i = 0; i < assignment.length; i++){
+                double[] place = new double[2];
 
-                boolean penalize = findAndCompareCoords(candidate, coordinates);
-                if(penalize){
-                    score = score-1;
-                }
-                coordinates.add(candidate);
+                place[0] = Double.parseDouble(assignment[i].get(PlaceJSONParser.strings.lat.toString()));
+                place[1] =  Double.parseDouble(assignment[i].get(PlaceJSONParser.strings.lng.toString()));
+                allCoordinates[i] = place;
             }
+
+
+            double toTilTre =   distanceInKmBetweenCoords(allCoordinates[1], allCoordinates[2]);
+            double enTilTre =   distanceInKmBetweenCoords(allCoordinates[0], allCoordinates[2]);
+            double treTilFire = distanceInKmBetweenCoords(allCoordinates[0], allCoordinates[3]);
+            double toTilFire =  distanceInKmBetweenCoords(allCoordinates[1], allCoordinates[3]);
+            double enTilFire=   distanceInKmBetweenCoords(allCoordinates[0], allCoordinates[3]);
+            double fireTilFem=  distanceInKmBetweenCoords(allCoordinates[3], allCoordinates[4]);
+            double treTilFem=   distanceInKmBetweenCoords(allCoordinates[2], allCoordinates[4]);
+            double toTilFem=    distanceInKmBetweenCoords(allCoordinates[1], allCoordinates[4]);
+
+            boolean penalize = false;
+            if(     distanceCheck(toTilTre,enTilTre) ||
+
+                    distanceCheck(treTilFire,toTilFire) ||
+                    distanceCheck(treTilFire, enTilFire) ||
+
+                    distanceCheck(fireTilFem, treTilFem) ||
+                    distanceCheck(fireTilFem, toTilFem)
+                    ){
+
+                penalize = true;
+            }
+
+            if(penalize){
+                score = -5;
+            }
+
 
             return score;
         }
 
-        //Finner koordinater og sammenligner de med de tidligere stedene og returnerer true om det finnes en sti som er mer effektiv
-        private boolean findAndCompareCoords(double[] candidate, List<double[]> coordinates) {
-
-
-            for(double[] d: coordinates){
-
-                double result = distanceInKmBetweenCoords(candidate,d);
-            }
-
-            return false;
+        private boolean distanceCheck(double arg1, double arg2) {
+            return ((arg1 > 200) && (arg1 > 3*arg2));
         }
+
 
         private double distanceInKmBetweenCoords(double[] candidate, double[] d) {
            double earthRadiusKm= 6371;
 
+            double dLat = Math.toRadians(d[0]-candidate[0]);
+            double dLng = Math.toRadians(d[1]-candidate[1]);
 
+            double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(Math.toRadians(candidate[0])) * Math.cos(Math.toRadians(d[0])) +
+                    Math.sin(dLng/2) * Math.sin(dLng/2);
 
+            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            double dist = earthRadiusKm * c;
 
-//            Math.sin
-            return 0;
+            return dist;
         }
     };
 
