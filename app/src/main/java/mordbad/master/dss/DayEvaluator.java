@@ -41,24 +41,30 @@ class DayEvaluator implements FitnessEvaluator<HashMap<String,String>[]> {
     }
 
     private double baseCaseFulfillment(HashMap<String, String>[] hashMaps) {
-        double result =0;
+        double result =5;
 
         for(HashMap<String, String> hm: hashMaps){
 
             //something about adding up scores here
         }
 
+        if(result < 0){
+            result =0;
+        }
+
         return result;
     }
 
     private double constraintFulfillment(HashMap<String, String>[] hashMaps) {
-        double result =0;
+        double result =5;
         for(DecisionConstraint c: decisionConstraint){
             //how to check for fulfillment?
             result += c.constraint(hashMaps);
 
         }
-
+        if(result < 0){
+            result = 0;
+        }
 
         return result;
     }
