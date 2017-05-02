@@ -174,6 +174,10 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         };
 
         //Instantiate the reasoner and give it access to the canonical array of place types so that the fragment and the reasoner are sure to talk about the same kinds of places
+        if(probabilitator!= null){
+            reasoner = new Reasoner(place_types,probabilitator.map_activities_to_probability_for_yes);
+        }
+        else
         reasoner = new Reasoner(place_types);
 
         return view;
