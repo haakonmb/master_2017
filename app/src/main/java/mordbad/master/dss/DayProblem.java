@@ -31,14 +31,13 @@ public class DayProblem {
 
             double toTilTre =   distanceInKmBetweenCoords(allCoordinates[1], allCoordinates[2]);
             double enTilTre =   distanceInKmBetweenCoords(allCoordinates[0], allCoordinates[2]);
-            double treTilFire = distanceInKmBetweenCoords(allCoordinates[0], allCoordinates[3]);
+            double treTilFire = distanceInKmBetweenCoords(allCoordinates[2], allCoordinates[3]);
             double toTilFire =  distanceInKmBetweenCoords(allCoordinates[1], allCoordinates[3]);
             double enTilFire=   distanceInKmBetweenCoords(allCoordinates[0], allCoordinates[3]);
             double fireTilFem=  distanceInKmBetweenCoords(allCoordinates[3], allCoordinates[4]);
             double treTilFem=   distanceInKmBetweenCoords(allCoordinates[2], allCoordinates[4]);
             double toTilFem=    distanceInKmBetweenCoords(allCoordinates[1], allCoordinates[4]);
 
-            boolean penalize = false;
             if(     distanceCheck(toTilTre,enTilTre) ||
 
                     distanceCheck(treTilFire,toTilFire) ||
@@ -47,20 +46,15 @@ public class DayProblem {
                     distanceCheck(fireTilFem, treTilFem) ||
                     distanceCheck(fireTilFem, toTilFem)
                     ){
-
-                penalize = true;
-            }
-
-            if(penalize){
                 score = -5;
             }
 
 
             return score;
         }
-
+        //Burde dette vært i en annen rekkefølge?
         private boolean distanceCheck(double arg1, double arg2) {
-            return ((arg1 > 200) && (arg1 > 3*arg2));
+            return ((arg1 > 0.2) && (arg1 > 3*arg2));
         }
 
 
