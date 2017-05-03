@@ -17,7 +17,19 @@ class Data {
 
     static  HashMap<String, Double[]> lookup_probability;
     static    Double[] priors_from_data = new Double[11];
-    static int[] stats = {1,1,1,1,1,1};
+    static int[] stats = {
+            //purpose of trip
+            2,
+            //country of origin
+            1,
+            //gender
+            1,
+            //age-bracket
+            3,
+            //education-level
+            3,
+            //status
+            1};
     static mockLocation location = new mockLocation("");
 
 //    Location location = new Location("");

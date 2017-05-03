@@ -31,7 +31,7 @@ public class ProbabilitatorTest {
     @Test
     public void checkProbabilities() throws Exception {
 
-        for(double d : probabilitator.probabilities){
+        for(double d : probabilitator.probabilities_scaled){
 
             System.out.println(d);
         }
@@ -53,6 +53,17 @@ public class ProbabilitatorTest {
             if(probabilitator.probabilities_scaled[i] > 0.8)
             System.out.println("Best thing:"+ probabilitator.probabilities_scaled[i]+ " "+ i);
         }
+
+    }
+
+    @Test
+    public void checkHashMapScaled() throws Exception{
+
+        for(int i : probabilitator.map_activities_to_probability_for_yes.keySet()){
+            System.out.println(Data.place_candidates[i] + ":" +  probabilitator.map_activities_to_probability_for_yes.get(i));
+
+        }
+            System.out.println(probabilitator.map_activities_to_probability_for_yes.get(200));
 
     }
 

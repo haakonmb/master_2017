@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.location.places.Place;
@@ -62,6 +63,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
     private TextView view3;
     private TextView view4;
     private TextView view5;
+    private ProgressBar progressBar;
 
     private Observer<HashMap<String,String>[]> subscriber;
     private HashMap<String,String>[] result;
@@ -115,6 +117,9 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         view5 = (TextView) view.findViewById(R.id.textView10);
 
         maplink = (TextView) view.findViewById(R.id.textView11);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
+        progressBar.setIndeterminate(true);
 //        place_types         = getResources().getStringArray(R.array.all_place_types);
         button.setOnClickListener(this);
 
@@ -165,7 +170,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
                             + result[4] + "\n"
                     );
                     makeLink();
-
+                    progressBar.setVisibility(progressBar.INVISIBLE);
                 }
                 catch(Exception e){
                     Log.d(TAG, ""+e);
@@ -235,6 +240,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
         switch (v.getId()){
             case(R.id.startTheApocalypse):
                 Log.d(TAG,"I Got Pressed :O");
+                progressBar.setVisibility(ProgressBar.VISIBLE);
                 reasoner.setSubscriber(subscriber);
                 int population = 100;
                 int timeToBreak = 5000;
