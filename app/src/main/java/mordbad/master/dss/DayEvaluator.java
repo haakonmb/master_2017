@@ -19,7 +19,7 @@ class DayEvaluator implements FitnessEvaluator<HashMap<String,String>[]> {
 
     @Override
     public double getFitness(HashMap<String, String>[] hashMaps, List<? extends HashMap<String, String>[]> list) {
-        double score = 0;
+        double score = 5;
 
         //How well does this assignment fulfill all the generated constraints?
         score += constraintFulfillment(hashMaps);
@@ -35,35 +35,31 @@ class DayEvaluator implements FitnessEvaluator<HashMap<String,String>[]> {
 //            score = 0;
 
 
-
+        if(score < 0){
+            score =0;
+        }
 
         return score;
     }
 
     private double baseCaseFulfillment(HashMap<String, String>[] hashMaps) {
-        double result =5;
+        double result =0;
 
         for(HashMap<String, String> hm: hashMaps){
 
             //something about adding up scores here
         }
 
-        if(result < 0){
-            result =0;
-        }
 
         return result;
     }
 
     private double constraintFulfillment(HashMap<String, String>[] hashMaps) {
-        double result =5;
+        double result =0;
         for(DecisionConstraint c: decisionConstraint){
             //how to check for fulfillment?
             result += c.constraint(hashMaps);
 
-        }
-        if(result < 0){
-            result = 0;
         }
 
         return result;

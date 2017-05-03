@@ -35,7 +35,7 @@ public class ActivityProblem{
 
             }
 
-            return 0;
+            return -1.0;
         }
 
     };
@@ -58,7 +58,7 @@ public class ActivityProblem{
             }
 
 
-            return 0.0;
+            return -1.0;
         }
     };
 

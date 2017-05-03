@@ -31,7 +31,7 @@ import java.util.List;
 
     @Override
     public double getFitness(int[] ints, List<? extends int[]> list) {
-        double score = 0;
+        double score = 5;
 
         //How well does this assignment fulfill all the generated constraints?
         score += constraintFulfillment(ints);
@@ -47,27 +47,26 @@ import java.util.List;
 //            score = 0;
 
 
-
+        if(score < 0){
+            score =0;
+        }
 
         return score;
     }
 
     private double baseCaseFulfillment(int[] ints) {
-        double score = 5;
+        double score = 0;
 
         for(int i: ints){
            score = score + weights.get(i);
 
         }
 
-        if(score < 0.0){
-            score = 0.0;
-        }
         return score;
     }
 
     private double constraintFulfillment(int[] ints) {
-        double result =5;
+        double result =0;
         for(DecisionConstraint<int[]> constraint : constraints){
             result =  result + constraint.constraint(ints);
 
@@ -75,9 +74,6 @@ import java.util.List;
 
         }
 
-        if(result < 0.0){
-            result = 0.0;
-        }
         return result;
     }
 

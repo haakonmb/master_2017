@@ -223,7 +223,9 @@ public class Reasoner {
 
     private HashMap<String, String>[] generateDay(int population, int[] activities, List<HashMap<String, String>>[] allofit) {
 //        int[] candidates = {0,1};
-
+        for(int i: activities){
+            Log.d(TAG, CheatData.place_candidates[i]);
+        }
 //        instantiateGeneticStuff();
         //stuff for evolutionengine
         DayFactory dayFactory = new DayFactory(allofit,activities.length);
