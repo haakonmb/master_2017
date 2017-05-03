@@ -85,7 +85,10 @@ public class Probabilitator {
 
             for(int map_position= 0; map_position< map.length; map_position++){
 //                System.out.println(CheatData.place_candidates[map[map_position]] + ":"+ Double.toString(probabilities_scaled[map_value]));
-                map_activities_to_probability_for_yes.put(map[map_position], probabilities_scaled[map_value]);
+                if(probabilities_scaled[map_value] > map_activities_to_probability_for_yes.get(map[map_position]) ){
+
+                    map_activities_to_probability_for_yes.put(map[map_position], probabilities_scaled[map_value]);
+                }
 
             }
 
