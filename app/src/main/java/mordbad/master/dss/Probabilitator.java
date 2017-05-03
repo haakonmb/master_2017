@@ -1,5 +1,7 @@
 package mordbad.master.dss;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -60,8 +62,13 @@ public class Probabilitator {
         //Bruk den på alle variablene
         for(int i =0 ; i < probabilities_object.length; i++){
 
-            probabilities_scaled[i] = probabilities_object[i] * scaleFactor;
-            probabilities_scaled[i] = probabilities_scaled[i] + scaleAdjuster;
+            double result = probabilities_object[i] * scaleFactor;
+
+            result += scaleAdjuster;
+            BigDecimal bd = new BigDecimal(result);
+            bd = bd.round(new MathContext(3));
+            result = bd.doubleValue();
+            probabilities_scaled[i] = result;
         }
 
 
@@ -114,7 +121,6 @@ public class Probabilitator {
             for(Double[] mult: everything){
                 result = mult[i] * result;
             }
-
             probabilities[i] = result;
             probabilities_object[i] = result;
         }
