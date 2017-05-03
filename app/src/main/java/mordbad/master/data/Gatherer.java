@@ -117,7 +117,7 @@ public class Gatherer {
 
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         sb.append("location=" + location.getLatitude() + "," + location.getLongitude());
-        sb.append("&radius=8000");
+        sb.append("&radius=6000");
         sb.append("&types=" + type);
         sb.append("&sensor=true");
         sb.append("&key="+ api_key);

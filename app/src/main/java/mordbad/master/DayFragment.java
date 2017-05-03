@@ -142,7 +142,7 @@ public class DayFragment extends Fragment implements Button.OnClickListener {
 
             @Override
             public void onError(Throwable t) {
-
+                Log.d(TAG,t.toString());
             }
 
             @Override
