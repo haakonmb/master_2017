@@ -16,7 +16,7 @@ public class Probabilitator {
     public double[] probabilities = new double[11];
     private Double[] probabilities_object = new Double[11];
     public Double[] probabilities_scaled = new Double[11];
-    public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(-0.5);
+    public DefaultHashMap<Integer, Double> map_activities_to_probability_for_yes = new DefaultHashMap<>(-1.0);
 
 
     public Probabilitator(Double[] priors, Map<String,Double[]> evidence, int[] data){
@@ -56,7 +56,7 @@ public class Probabilitator {
         //finn skalaraen
         double scaleFactor = highestScale/probabilities[sortedIndex[sortedIndex.length-1]];
 
-        System.out.println("Scaleadjuster" + scaleAdjuster);
+//        System.out.println("Scaleadjuster" + scaleAdjuster);
         //Bruk den på alle variablene
         for(int i =0 ; i < probabilities_object.length; i++){
 
@@ -84,7 +84,8 @@ public class Probabilitator {
             int[] map = allmaps[map_value];
 
             for(int map_position= 0; map_position< map.length; map_position++){
-                map_activities_to_probability_for_yes.put(map[map_position], probabilities[map_value]);
+//                System.out.println(CheatData.place_candidates[map[map_position]] + ":"+ Double.toString(probabilities_scaled[map_value]));
+                map_activities_to_probability_for_yes.put(map[map_position], probabilities_scaled[map_value]);
 
             }
 
