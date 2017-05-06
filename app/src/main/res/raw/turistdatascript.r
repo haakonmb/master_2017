@@ -42,8 +42,43 @@ for(name in c(1:length(names))){
   }      
 }
 
+#Getting the tabled distribution of data on the values to find the optimal candidate
+values<- vector("list",6)
+counter <- 1
+for(name in names){
+  tmp <- table(data[name])
+  values[[counter]] <- tmp
+  counter <- counter +1
+  
+}
 
+labels <- vector("list",6)
 
+labels[[1]] <- c("Visiting friends", "Other vacation and freetime-activities")
+labels[[2]] <- c("Norway","Europe","America","Asia","Other")
+labels[[3]] <- c("Male","Female","Other")
+labels[[4]] <- c("1-18","19-30","31-40","41-50","51-60","60+")
+labels[[5]] <- c("Lower Secondary","Higher Secondary","Bachelor","Master","Researcher","Dont know")
+labels[[6]] <- c("Employed","Self-employed","Pensioner","Student","Other","Dont know")
+
+questions <- vector("list",6)
+questions[[1]] <- "Main Purpose of visit?"
+questions[[2]] <- "Country/continent of permanent residence?"
+questions[[3]] <- "Gender?"
+questions[[4]] <- "Age-range?"
+questions[[5]] <- "Highest education level?"
+questions[[6]] <- "Status?"
+
+percent <- vector("list",6)
+counter <-1
+
+for(i in c(1:6)){
+  percent[[counter]] <- round(values[[counter]]/sum(values[[counter]])*100)
+  labels[[counter]] <- paste(labels[[counter]],percent[[counter]])
+  labels[[counter]] <- paste(labels[[counter]],"%",sep="")
+  pie(values[[counter]],labels=labels[[counter]],col=rainbow(length(labels[[counter]])),main = questions[[counter]])
+  counter <- counter +1
+}
 
 #Old evidence-probabilities generator
 # for(name in c(1:length(names))){
@@ -66,6 +101,8 @@ for(column in c(7:17)){
   probability.independent[counter] <- tmp
   counter <- counter +1
 }
+
+#df.values <- data.frame(matrix(unlist(values), nrow = 25,byrow=T))
 
 df.prob.pre  <- data.frame(matrix(unlist(probability.independent), nrow=11, byrow=T))
 df.prob.post <- data.frame(matrix(unlist(probability.dependent), nrow=25, byrow=T))
