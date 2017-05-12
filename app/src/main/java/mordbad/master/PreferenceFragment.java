@@ -99,7 +99,7 @@ public class PreferenceFragment extends android.support.v4.app.Fragment implemen
                 new Question("What is the main purpose of your visit?", new String[]{"Visiting friends","Other vacation and freetime-activities","Businesstrip", "Passing through on my way to another location","Dont Know"}),
                 new Question("In which country/continent is your permanent residence?", new String[]{"Norway","Europe","Amerika","Asia","Annet"}),
                 new Question("What is your gender?", new String[]{"Male","Female","Other"}),
-                new Question("What is your age-range?", new String[]{"1-18","19-30","31-40","41-50","51-60","60+"}),
+                new Question("What is your age-range?", new String[]{"1-29","30-45","46-60","60+"}),
                 new Question("What is your highest education level?", new String[]{"Grunnskole","Videregående","Bachelor","Master","Researcher","Dont know"}),
                 new Question("What is your status?", new String[]{"Employed","Self-employed","Pensioner","Student","Other","Dont know"})};
 
