@@ -83,6 +83,7 @@ for(i in c(1:6)){
 
 
 #viktor sin plot
+library(ggplot2)
 a <-c(percent[[1]][[1]],percent[[1]][[2]])
 a <- c(percent[[2]][[1]],percent[[2]][[2]],percent[[2]][[3]],percent[[2]][[4]],percent[[2]][[5]])
 a <- c(percent[[3]][[1]],percent[[3]][[2]])
@@ -91,7 +92,7 @@ a <- c(percent[[5]][[1]],percent[[5]][[2]],percent[[5]][[3]],percent[[5]][[4]],p
 a <- c(percent[[6]][[1]],percent[[6]][[2]],percent[[6]][[3]],percent[[6]][[4]],percent[[6]][[5]],percent[[6]][[6]])
 
 
-b <- c("Visiting friends", "Other vacation and freetime-activities")
+b <- c("Visiting friends", "Other vacation activities")
 b <- c("Norway","Europe","America","Asia","Other")
 b <- c("Male","Female")
 b <- c("1-29","30-45","46-60","60+")
@@ -110,7 +111,9 @@ ggplot(data = df,aes(b, weight = a)) +
   scale_fill_brewer(palette = "Blues") +   
   xlab("Features") +  
   ylab("% of .....") +  
-  coord_cartesian(ylim = c(0,100))
+  coord_cartesian(ylim = c(0,100)) +
+                    theme(text = element_text(size=25),
+                          axis.text.x = element_text(angle=90, hjust=1)) 
 
 
 #Old evidence-probabilities generator
