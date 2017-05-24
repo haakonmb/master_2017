@@ -11,6 +11,26 @@ import mordbad.master.data.PlaceJSONParser;
 public class DayProblem {
 
 
+    private static double distanceInKmBetweenCoords(double[] candidate, double[] d){
+        double earthRadiusKm= 6371;
+
+        double dLat = Math.toRadians(d[0]-candidate[0]);
+        double dLng = Math.toRadians(d[1]-candidate[1]);
+
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(candidate[0])) * 
+		Math.cos(Math.toRadians(d[0])) +
+                Math.sin(dLng/2) * 
+		Math.sin(dLng/2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = earthRadiusKm * c;
+
+        return dist;
+    }
+
+
+
     //Score lower for laybacking, ie going far away and coming back again, except distance between first and fifth
     //TODO: finish implementation
     final static DecisionConstraint<HashMap<String,String>[]> constraint1 = new DecisionConstraint<HashMap<String, String>[]>() {
@@ -52,27 +72,12 @@ public class DayProblem {
 
             return score;
         }
-        //Burde dette vært i en annen rekkefølge?
         private boolean distanceCheck(double arg1, double arg2) {
             return ((arg1 > 0.2) && (arg1 > 2*arg2));
         }
 
 
-        private double distanceInKmBetweenCoords(double[] candidate, double[] d) {
-           double earthRadiusKm= 6371;
 
-            double dLat = Math.toRadians(d[0]-candidate[0]);
-            double dLng = Math.toRadians(d[1]-candidate[1]);
-
-            double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                    Math.cos(Math.toRadians(candidate[0])) * Math.cos(Math.toRadians(d[0])) +
-                    Math.sin(dLng/2) * Math.sin(dLng/2);
-
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            double dist = earthRadiusKm * c;
-
-            return dist;
-        }
     };
 
     //Penalize repeats
@@ -105,7 +110,17 @@ public class DayProblem {
     };
 
 
+    final static DecisionConstraint<HashMap<String,String>[]> constraint3 = new DecisionConstraint<HashMap<String, String>[]>() {
+        @Override
+        public double constraint(HashMap<String, String>[] assignment) {
+
+
+
+            return 0;
+        }
+    };
+
         //Create the array of all the constraints
-        final static DecisionConstraint<HashMap<String,String>[]>[] constraints = new DecisionConstraint[]{constraint1, constraint2};
+        final static DecisionConstraint<HashMap<String,String>[]>[] constraints = new DecisionConstraint[]{constraint1, constraint2, constraint3};
 
 }

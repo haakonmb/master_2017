@@ -21,7 +21,11 @@ public class ActivityFactory<T> extends AbstractCandidateFactory<int[]> {
     @Override
     public int[] generateRandomCandidate(Random random) {
         //TODO: make size of array be configurable easily
-        int[] candidate= {random.nextInt(bound),random.nextInt(bound),random.nextInt(bound),random.nextInt(bound),random.nextInt(bound)};
+        int[] candidate= {random.nextInt(bound),
+		random.nextInt(bound),
+		random.nextInt(bound),
+		random.nextInt(bound),
+		random.nextInt(bound)};
 
         
 
