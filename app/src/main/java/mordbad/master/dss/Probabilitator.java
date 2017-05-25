@@ -28,7 +28,6 @@ public class Probabilitator {
         calculateProbabilities();
         normalizeProbabilites();
         convertProbabilitesToPositions();
-
     }
 
     private void normalizeProbabilites() {
